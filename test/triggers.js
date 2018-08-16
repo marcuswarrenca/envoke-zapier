@@ -17,32 +17,32 @@ describe('triggers', () => {
 
 			appTester(App.triggers.lead.operation.perform, bundle)
 				.then(results => {
-				results.length.should.above(0);
+					results.length.should.above(0);
 
-				const firstRecipe = results[0];
-				firstRecipe.name.should.eql('name 2');
-				firstRecipe.directions.should.eql('directions 2');
+					const firstRecipe = results[0];
+					firstRecipe.name.should.eql('name 2');
+					firstRecipe.directions.should.eql('directions 2');
 
-				done();
-			})
-			.catch(done);
+					done();
+				})
+				.catch(done);
 		});
 
 		it('should load leads without filters', (done) => {
 			const bundle = {};
 
-		appTester(App.triggers.lead.operation.perform, bundle)
-			.then(results => {
-			results.length.should.above(1);
+			appTester(App.triggers.lead.operation.perform, bundle)
+				.then(results => {
+					results.length.should.above(1);
 
-			const firstRecipe = results[0];
-			firstRecipe.name.should.eql('name 1');
-			firstRecipe.directions.should.eql('directions 1');
+					const firstRecipe = results[0];
+					firstRecipe.name.should.eql('name 1');
+					firstRecipe.directions.should.eql('directions 1');
 
-			done();
-		})
-		.catch(done);
+					done();
+				})
+				.catch(done);
+		});
 	});
-});
 
 });

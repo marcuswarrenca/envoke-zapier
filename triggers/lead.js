@@ -16,7 +16,7 @@ const listRecipes = (z, bundle) => {
 
 	// You may return a promise or a normal data structure from any perform method.
 	return z.request(requestOptions)
-			.then((response) => z.JSON.parse(response.content));
+		.then((response) => z.JSON.parse(response.content));
 };
 
 // We recommend writing your triggers separate like this and rolling them
