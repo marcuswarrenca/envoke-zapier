@@ -1,6 +1,9 @@
 
 const authentication = require('./authentication');
-const lead = require('./triggers/lead');
+
+//const lead = require('./triggers/lead');
+
+const new_lead = require('./triggers/new_lead');
 
 const App = {
   // This is just shorthand to reference the installed dependencies you have. Zapier will
@@ -21,7 +24,7 @@ const App = {
 
   // If you want your trigger to show up, you better include it here!
   triggers: {
-    [lead.key]: lead
+	  [new_lead.key]: new_lead,
   },
 
   // If you want your searches to show up, you better include it here!
