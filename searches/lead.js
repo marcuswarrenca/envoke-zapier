@@ -1,123 +1,108 @@
-const subscribeHook = (z, bundle) => {
-	// `z.console.log()` is similar to `console.log()`.
-
-	// z.console.log('console says hello world!');
-
-	// bundle.targetUrl has the Hook URL this app should call when a recipe is created.
-	const data = {
-		url: bundle.targetUrl,
-		type: 'new_lead',
-
-		//TODO: include optional properties here to filter by
-		//style: bundle.inputData.style
-	};
-
-	// You can build requests and our client will helpfully inject all the variables
-	// you need to complete. You can also register middleware to control this.
-	const options = {
-
-		url: 'https://e1c.envoke.com/v1/hooks',
-
-		// url: 'https://e1d.envoke.com/test_log.php',
-		// url: 'http://postb.in/2X5lIG01',
-
-		method: 'POST',
-		body: JSON.stringify(data)
-	};
-
-	// You may return a promise or a normal data structure from any perform method.
-	return z.request(options)
-		.then((response) => JSON.parse(response.content));
-};
-
-const unsubscribeHook = (z, bundle) => {
-	// bundle.subscribeData contains the parsed response JSON from the subscribe
-	// request made initially.
-	const hookId = bundle.subscribeData.id;
-
-	// You can build requests and our client will helpfully inject all the variables
-	// you need to complete. You can also register middleware to control this.
-	const options = {
-		url: `https://e1c.envoke.com/v1/hooks/${hookId}`,
-		method: 'DELETE',
-	};
-
-	// You may return a promise or a normal data structure from any perform method.
-	return z.request(options)
-		.then((response) => JSON.parse(response.content));
-};
-
-const get = (z, bundle) => {
-	// bundle.cleanedRequest will include the parsed JSON object (if it's not a
-	// test poll) and also a .querystring property with the URL's query string.
-
-	//TODO: is there anything we need to do here?
-	/*
-	const recipe = {
-		id: bundle.cleanedRequest.id,
-		name: bundle.cleanedRequest.name,
-		directions: bundle.cleanedRequest.directions,
-		style: bundle.cleanedRequest.style,
-		authorId: bundle.cleanedRequest.authorId,
-		createdAt: bundle.cleanedRequest.createdAt
-	};
-
-	return [recipe];
-	*/
-
-	return bundle.cleanedRequest;
-};
-
-const getFallbackReal = (z, bundle) => {
-	// For the test poll, you should get some real data, to aid the setup process.
-	const options = {
-		url: 'https://e1c.envoke.com/v1/leads',
-		/*
-		params: {
-			style: bundle.inputData.style
-		}
-		*/
-	};
-
-	return z.request(options)
-		.then((response) => JSON.parse(response.content));
-};
-
-// We recommend writing your triggers separate like this and rolling them
-// into the App definition at the end.
 module.exports = {
-	key: 'new_lead',
+	key: 'lead',
 
 	// You'll want to provide some helpful display labels and descriptions
 	// for users. Zapier will put them into the UX.
 	noun: 'Lead',
 	display: {
-		label: 'New Lead',
-		description: 'Trigger when a new lead is added.'
+		label: 'Find a Lead',
+		description: 'Search for leads.'
 	},
 
-	// `operation` is where the business logic goes.
+	// `operation` is where we make the call to your API to do the search
 	operation: {
-
-		// `inputFields` can define the fields a user could provide,
-		// we'll pass them in as `bundle.inputData` later.
+		// This search only has one search field. Your searches might have just one, or many
+		// search fields.
 		inputFields: [
+
+
+			//TODO: list all the fields we support searching for here...
+
 			/*
-			{ key: 'style', type: 'string', helpText: 'Which styles of cuisine this should trigger on.' }
+			{
+				key: 'style',
+				type: 'string',
+				label: 'Style',
+				helpText: 'Cuisine style to limit to the search to (i.e. mediterranean or italian).'
+			}
 			*/
+
+			{
+				key: 'id',
+				type: 'string',
+				label: 'ID',
+				helpText: 'The lead ID in Envoke'
+			},
+			{
+				key: 'remote_id',
+				type: 'string',
+				label: 'remote_id',
+				helpText: ''
+			},
+			{
+				key: 'business_unit',
+				type: 'string',
+				label: 'business_unit',
+				helpText: ''
+			},
+			{
+				key: 'rule_rating',
+				type: 'string',
+				label: 'rule_rating',
+				helpText: ''
+			},
+			{
+				key: 'marketing_rating_status',
+				type: 'string',
+				label: 'marketing_rating_status',
+				helpText: ''
+			},
+			{
+				key: 'salesperson',
+				type: 'string',
+				label: 'salesperson',
+				helpText: ''
+			},
+			{
+				key: 'sales_rating_status',
+				type: 'string',
+				label: 'sales_rating_status',
+				helpText: ''
+			},
+			{
+				key: 'opportunity',
+				type: 'string',
+				label: 'opportunity',
+				helpText: ''
+			},
+			{
+				key: 'sale',
+				type: 'string',
+				label: 'sale',
+				helpText: ''
+			},
+
 		],
 
-		type: 'hook',
+		perform: (z, bundle) => {
+			const url = 'https://e1d.envoke.com/v1/leads';
 
-		performSubscribe: subscribeHook,
-		performUnsubscribe: unsubscribeHook,
+			// Put the search value in a query param. The details of how to build
+			// a search URL will depend on how your API works.
+			const options = {
 
-		perform: get,
-		performList: getFallbackReal,
+				//TODO: review how these params will come out...
+				params: {}
+			};
 
-		// In cases where Zapier needs to show an example record to the user, but we are unable to get a live example
-		// from the API, Zapier will fallback to this hard-coded sample. It should reflect the data structure of
-		// returned records, and have obviously dummy values that we can show to any user.
+			[ 'id', 'remote_id', 'business_unit', 'rule_rating', 'marketing_rating_status', 'salesperson', 'sales_rating_status', 'opportunity', 'sale', ].forEach((key) => {
+				options.params[encodeURIComponent(`filter[$key]`)] = bundle.inputData[key];
+			});
+
+			return z.request(url, options)
+				.then(response => JSON.parse(response.content));
+		},
+
 		sample: {
 			"id": "1234",
 			"contact": {
@@ -189,10 +174,6 @@ module.exports = {
 			"pageview_id": "1455032370950"
 		},
 
-		// If the resource can have fields that are custom on a per-user basis, define a function to fetch the custom
-		// field definitions. The result will be used to augment the sample.
-		// outputFields: () => { return []; }
-		// Alternatively, a static field definition should be provided, to specify labels for the fields
 		outputFields: [
 
 			{ key: "id", label: "id" },

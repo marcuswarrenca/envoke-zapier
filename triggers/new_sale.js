@@ -6,7 +6,7 @@ const subscribeHook = (z, bundle) => {
 	// bundle.targetUrl has the Hook URL this app should call when a recipe is created.
 	const data = {
 		url: bundle.targetUrl,
-		type: 'new_lead',
+		type: 'new_sale',
 
 		//TODO: include optional properties here to filter by
 		//style: bundle.inputData.style
@@ -86,14 +86,14 @@ const getFallbackReal = (z, bundle) => {
 // We recommend writing your triggers separate like this and rolling them
 // into the App definition at the end.
 module.exports = {
-	key: 'new_lead',
+	key: 'new_sale',
 
 	// You'll want to provide some helpful display labels and descriptions
 	// for users. Zapier will put them into the UX.
-	noun: 'Lead',
+	noun: 'Sale',
 	display: {
-		label: 'New Lead',
-		description: 'Trigger when a new lead is added.'
+		label: 'New Sale',
+		description: 'Trigger when a new sale is added.'
 	},
 
 	// `operation` is where the business logic goes.

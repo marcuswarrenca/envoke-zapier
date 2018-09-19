@@ -1,123 +1,98 @@
-const subscribeHook = (z, bundle) => {
-	// `z.console.log()` is similar to `console.log()`.
-
-	// z.console.log('console says hello world!');
-
-	// bundle.targetUrl has the Hook URL this app should call when a recipe is created.
-	const data = {
-		url: bundle.targetUrl,
-		type: 'new_lead',
-
-		//TODO: include optional properties here to filter by
-		//style: bundle.inputData.style
-	};
-
-	// You can build requests and our client will helpfully inject all the variables
-	// you need to complete. You can also register middleware to control this.
-	const options = {
-
-		url: 'https://e1c.envoke.com/v1/hooks',
-
-		// url: 'https://e1d.envoke.com/test_log.php',
-		// url: 'http://postb.in/2X5lIG01',
-
-		method: 'POST',
-		body: JSON.stringify(data)
-	};
-
-	// You may return a promise or a normal data structure from any perform method.
-	return z.request(options)
-		.then((response) => JSON.parse(response.content));
-};
-
-const unsubscribeHook = (z, bundle) => {
-	// bundle.subscribeData contains the parsed response JSON from the subscribe
-	// request made initially.
-	const hookId = bundle.subscribeData.id;
-
-	// You can build requests and our client will helpfully inject all the variables
-	// you need to complete. You can also register middleware to control this.
-	const options = {
-		url: `https://e1c.envoke.com/v1/hooks/${hookId}`,
-		method: 'DELETE',
-	};
-
-	// You may return a promise or a normal data structure from any perform method.
-	return z.request(options)
-		.then((response) => JSON.parse(response.content));
-};
-
-const get = (z, bundle) => {
-	// bundle.cleanedRequest will include the parsed JSON object (if it's not a
-	// test poll) and also a .querystring property with the URL's query string.
-
-	//TODO: is there anything we need to do here?
-	/*
-	const recipe = {
-		id: bundle.cleanedRequest.id,
-		name: bundle.cleanedRequest.name,
-		directions: bundle.cleanedRequest.directions,
-		style: bundle.cleanedRequest.style,
-		authorId: bundle.cleanedRequest.authorId,
-		createdAt: bundle.cleanedRequest.createdAt
-	};
-
-	return [recipe];
-	*/
-
-	return bundle.cleanedRequest;
-};
-
-const getFallbackReal = (z, bundle) => {
-	// For the test poll, you should get some real data, to aid the setup process.
-	const options = {
-		url: 'https://e1c.envoke.com/v1/leads',
-		/*
-		params: {
-			style: bundle.inputData.style
-		}
-		*/
-	};
-
-	return z.request(options)
-		.then((response) => JSON.parse(response.content));
-};
-
-// We recommend writing your triggers separate like this and rolling them
+// We recommend writing your creates separate like this and rolling them
 // into the App definition at the end.
 module.exports = {
-	key: 'new_lead',
+	key: 'lead',
 
 	// You'll want to provide some helpful display labels and descriptions
 	// for users. Zapier will put them into the UX.
 	noun: 'Lead',
 	display: {
-		label: 'New Lead',
-		description: 'Trigger when a new lead is added.'
+		label: 'Create Lead',
+		description: 'Creates a new lead.'
 	},
 
 	// `operation` is where the business logic goes.
 	operation: {
-
-		// `inputFields` can define the fields a user could provide,
-		// we'll pass them in as `bundle.inputData` later.
 		inputFields: [
+
+			//TODO: ... see examples below and create field directory here...
+
 			/*
-			{ key: 'style', type: 'string', helpText: 'Which styles of cuisine this should trigger on.' }
+			{key: 'name', required: true, type: 'string'},
+			{key: 'directions', required: true, type: 'text', helpText: 'Explain how should one make the recipe, step by step.'},
+			{key: 'authorId', required: true, type: 'integer', label: 'Author ID'},
+			{key: 'style', required: false, type: 'string', helpText: 'Explain what style of cuisine this is.'},
 			*/
+
+
+			//TODO: id required for updates, not creates
+			// { key: "id", label: "id" },
+
+			//TODO: not sure what to do with the contact sub object
+			// { key: "contact", label: "contact" },
+
+			{ key: "business_unit", label: "business_unit" },
+			{ key: "remote_id", label: "remote_id" },
+			{ key: "marketing_user", label: "marketing_user" },
+			{ key: "salesperson", label: "salesperson" },
+			{ key: "create_time", label: "create_time" },
+			{ key: "create_note", label: "create_note" },
+			{ key: "rule_rating", label: "rule_rating", required: true },
+			{ key: "marketing_rating_status", label: "marketing_rating_status" },
+			{ key: "marketing_rating", label: "marketing_rating" },
+			{ key: "marketing_rating_time", label: "marketing_rating_time" },
+			{ key: "marketing_rating_note", label: "marketing_rating_note" },
+			{ key: "sales_rating_status", label: "sales_rating_status" },
+			{ key: "sales_rating", label: "sales_rating" },
+			{ key: "sales_rating_time", label: "sales_rating_time" },
+			{ key: "sales_rating_note", label: "sales_rating_note" },
+			{ key: "opportunity", label: "opportunity" },
+			{ key: "opportunity_time", label: "opportunity_time" },
+			{ key: "opportunity_note", label: "opportunity_note" },
+			{ key: "sale", label: "sale" },
+			{ key: "sale_time", label: "sale_time" },
+			{ key: "sale_note", label: "sale_note" },
+			{ key: "revenue", label: "revenue" },
+			{ key: "cost_of_goods_sold", label: "cost_of_goods_sold" },
+			{ key: "lead_region", label: "lead_region" },
+			{ key: "sales_channel", label: "sales_channel" },
+			{ key: "industry", label: "industry" },
+			{ key: "timing", label: "timing" },
+			{ key: "budget", label: "budget" },
+			{ key: "marketing_source", label: "marketing_source" },
+			{ key: "marketing_medium", label: "marketing_medium" },
+			{ key: "marketing_campaign", label: "marketing_campaign" },
+			{ key: "visitor_id", label: "visitor_id" },
+			{ key: "visit_id", label: "visit_id" },
+			{ key: "pageview_id", label: "pageview_id" },
+
 		],
+		perform: (z, bundle) => {
+			const promise = z.request({
+				url: 'https://e1d.envoke.com/v1/leads',
+				method: 'POST',
 
-		type: 'hook',
+				body: JSON.stringify(bundle.inputData),
 
-		performSubscribe: subscribeHook,
-		performUnsubscribe: unsubscribeHook,
+				/*
+				body: JSON.stringify({
+					name: bundle.inputData.name,
+					directions: bundle.inputData.directions,
+					authorId: bundle.inputData.authorId,
+					style: bundle.inputData.style,
+				}),
+				*/
 
-		perform: get,
-		performList: getFallbackReal,
+				headers: {
+					'content-type': 'application/json',
+				}
+			});
 
-		// In cases where Zapier needs to show an example record to the user, but we are unable to get a live example
-		// from the API, Zapier will fallback to this hard-coded sample. It should reflect the data structure of
-		// returned records, and have obviously dummy values that we can show to any user.
+			return promise.then((response) => JSON.parse(response.content));
+		},
+
+
+
 		sample: {
 			"id": "1234",
 			"contact": {
@@ -189,10 +164,6 @@ module.exports = {
 			"pageview_id": "1455032370950"
 		},
 
-		// If the resource can have fields that are custom on a per-user basis, define a function to fetch the custom
-		// field definitions. The result will be used to augment the sample.
-		// outputFields: () => { return []; }
-		// Alternatively, a static field definition should be provided, to specify labels for the fields
 		outputFields: [
 
 			{ key: "id", label: "id" },
@@ -233,5 +204,6 @@ module.exports = {
 			{ key: "pageview_id", label: "pageview_id" },
 
 		]
+
 	}
 };

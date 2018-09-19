@@ -6,7 +6,7 @@ const subscribeHook = (z, bundle) => {
 	// bundle.targetUrl has the Hook URL this app should call when a recipe is created.
 	const data = {
 		url: bundle.targetUrl,
-		type: 'new_lead',
+		type: 'passed_to_sales',
 
 		//TODO: include optional properties here to filter by
 		//style: bundle.inputData.style
@@ -71,7 +71,7 @@ const get = (z, bundle) => {
 const getFallbackReal = (z, bundle) => {
 	// For the test poll, you should get some real data, to aid the setup process.
 	const options = {
-		url: 'https://e1c.envoke.com/v1/leads',
+		url: 'https://e1c.envoke.com/v1/leads?filter%5Bmarketing_rating_status%5D=passed%20to%20sales',
 		/*
 		params: {
 			style: bundle.inputData.style
@@ -86,14 +86,14 @@ const getFallbackReal = (z, bundle) => {
 // We recommend writing your triggers separate like this and rolling them
 // into the App definition at the end.
 module.exports = {
-	key: 'new_lead',
+	key: 'passed_to_sales',
 
 	// You'll want to provide some helpful display labels and descriptions
 	// for users. Zapier will put them into the UX.
-	noun: 'Lead',
+	noun: 'Passed to sales',
 	display: {
-		label: 'New Lead',
-		description: 'Trigger when a new lead is added.'
+		label: 'Passed to Sales',
+		description: 'Trigger when a lead is passed to sales.'
 	},
 
 	// `operation` is where the business logic goes.
