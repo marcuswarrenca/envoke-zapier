@@ -90,54 +90,73 @@ module.exports = {
 			// Put the search value in a query param. The details of how to build
 			// a search URL will depend on how your API works.
 			const options = {
-
-				//TODO: review how these params will come out...
 				params: {}
 			};
 
 			[ 'id', 'remote_id', 'business_unit', 'rule_rating', 'marketing_rating_status', 'salesperson', 'sales_rating_status', 'opportunity', 'sale', ].forEach((key) => {
-				options.params[encodeURIComponent(`filter[$key]`)] = bundle.inputData[key];
+				//TODO: allow searches for empty strings?
+				bundle.inputData[key] && ( options.params[encodeURIComponent(`filter[${key}]`)] = bundle.inputData[key] );
 			});
 
-			return z.request(url, options)
-				.then(response => JSON.parse(response.content));
+			[ 'email', 'contact_id', 'contact_remote_id', 'company', ].forEach((key) => {
+				//TODO: allow searches for empty strings?
+				bundle.inputData[key] && ( options.params[encodeURIComponent(`filter[contact.${key}]`)] = bundle.inputData[key] );
+			});
+
+			// Fatten the contact fields in the response
+			return z.request(url, options).then(response => {
+				const responseContent = JSON.parse(response.content);
+				return responseContent.map((responseItem) => {
+
+					const contactData = responseItem.contact;
+
+					responseItem.contact_id = contactData.id;
+					responseItem.contact_remote_id = contactData.remote_id;
+
+					delete contactData.id;
+					delete contactData.remote_id;
+
+					return Object.assign(responseItem, contactData);
+				});
+			});
 		},
 
 		sample: {
 			"id": "1234",
-			"contact": {
-				"id": "321654",
-				"remote_id": "",
-				"first_name": "John",
-				"last_name": "Purchase",
-				"title": "Chief Architect",
-				"email": "new-contact@api-testing.com",
-				"company": "Art Vandelay Import/Exports",
-				"phone": "647-987-1234",
-				"address_1": "401 Richmond Street West",
-				"address_2": "",
-				"city": "Toronto",
-				"country": "CA",
-				"province": "ON",
-				"postal_code": "M5V 5K7",
-				"website": "",
-				"language": "en",
-				"feedback": "Hello. I'm interested in buying many of your widgets, please have someone contact me immediately!",
-				"consent_status": "Express",
-				"consent_description": "Lead is interested in receiving our widget updates",
-				"custom_fields": {
-					"widget_name": "Gold Deluxe Model 5X33"
-				},
-				"interests": [
-					"Business Products",
-					"International",
-					"Consumer"
-				],
-				"autoresponders": [
-					"Marketing Sequence 1",
-					"Whitepaper Download"
-				]
+
+			// Flattened contact fields
+			"contact_id": "321654",
+			"contact_remote_id": "",
+			"first_name": "John",
+			"last_name": "Purchase",
+			"title": "Chief Architect",
+			"email": "new-contact@api-testing.com",
+			"company": "Art Vandelay Import/Exports",
+			"phone": "647-987-1234",
+			"address_1": "401 Richmond Street West",
+			"address_2": "",
+			"city": "Toronto",
+			"country": "CA",
+			"province": "ON",
+			"postal_code": "M5V 5K7",
+			"website": "",
+			"language": "en",
+			"feedback": "Hello. I'm interested in buying many of your widgets, please have someone contact me immediately!",
+			"consent_status": "Express",
+			"consent_description": "Lead is interested in receiving our widget updates",
+			"custom_fields": {
+				"widget_name": "Gold Deluxe Model 5X33"
 			},
+			"interests": [
+				"Business Products",
+				"International",
+				"Consumer"
+			],
+			"autoresponders": [
+				"Marketing Sequence 1",
+				"Whitepaper Download"
+			],
+
 			"business_unit": "B2B Widgets",
 			"remote_id": "",
 			"marketing_user": "Jane Manager",
@@ -177,7 +196,30 @@ module.exports = {
 		outputFields: [
 
 			{ key: "id", label: "id" },
-			{ key: "contact", label: "contact" },
+
+			{ key: "contact_id", label: "contact_id" },
+			{ key: "contact_remote_id", label: "contact_remote_id" },
+			{ key: "first_name", label: "first_name" },
+			{ key: "last_name", label: "last_name" },
+			{ key: "title", label: "title" },
+			{ key: "email", label: "email" },
+			{ key: "company", label: "company" },
+			{ key: "phone", label: "phone" },
+			{ key: "address_1", label: "address_1" },
+			{ key: "address_2", label: "address_2" },
+			{ key: "city", label: "city" },
+			{ key: "country", label: "country" },
+			{ key: "province", label: "province" },
+			{ key: "postal_code", label: "postal_code" },
+			{ key: "website", label: "website" },
+			{ key: "language", label: "language" },
+			{ key: "feedback", label: "feedback" },
+			{ key: "consent_status", label: "consent_status" },
+			{ key: "consent_description", label: "consent_description" },
+			{ key: "custom_fields", label: "custom_fields" },
+			{ key: "interests", label: "interests" },
+			{ key: "autoresponders", label: "autoresponders" },
+
 			{ key: "business_unit", label: "business_unit" },
 			{ key: "remote_id", label: "remote_id" },
 			{ key: "marketing_user", label: "marketing_user" },
