@@ -66,7 +66,7 @@ const get = (z, bundle) => {
 const getFallbackReal = (z, bundle) => {
 	// For the test poll, you should get some real data, to aid the setup process.
 	const options = {
-		url: 'https://e1d.envoke.com/v1/leads?filter%5Bmarketing_rating_status%5D=passed%20to%20sales',
+		url: 'https://e1d.envoke.com/v1/leads?filter%5Bmarketing_rating_status%5D=passed%20to%20sales&sort%5Bid%5D=DESC',
 		/*
 		params: {
 			style: bundle.inputData.style
