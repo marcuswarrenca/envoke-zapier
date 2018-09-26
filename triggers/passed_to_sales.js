@@ -15,12 +15,7 @@ const subscribeHook = (z, bundle) => {
 	// You can build requests and our client will helpfully inject all the variables
 	// you need to complete. You can also register middleware to control this.
 	const options = {
-
-		url: 'https://e1c.envoke.com/v1/hooks',
-
-		// url: 'https://e1d.envoke.com/test_log.php',
-		// url: 'http://postb.in/2X5lIG01',
-
+		url: 'https://e1d.envoke.com/v1/hooks',
 		method: 'POST',
 		body: JSON.stringify(data)
 	};
@@ -38,7 +33,7 @@ const unsubscribeHook = (z, bundle) => {
 	// You can build requests and our client will helpfully inject all the variables
 	// you need to complete. You can also register middleware to control this.
 	const options = {
-		url: `https://e1c.envoke.com/v1/hooks/${hookId}`,
+		url: `https://e1d.envoke.com/v1/hooks/${hookId}`,
 		method: 'DELETE',
 	};
 
@@ -71,7 +66,7 @@ const get = (z, bundle) => {
 const getFallbackReal = (z, bundle) => {
 	// For the test poll, you should get some real data, to aid the setup process.
 	const options = {
-		url: 'https://e1c.envoke.com/v1/leads?filter%5Bmarketing_rating_status%5D=passed%20to%20sales',
+		url: 'https://e1d.envoke.com/v1/leads?filter%5Bmarketing_rating_status%5D=passed%20to%20sales',
 		/*
 		params: {
 			style: bundle.inputData.style

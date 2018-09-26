@@ -1,10 +1,10 @@
 {
-  "name": "zapier-platform-example-app-basic-auth",
+  "name": "envoke-zapier",
   "version": "1.0.0",
-  "description": "An example app for the Zapier platform.",
-  "repository": "zapier/zapier-platform-example-app-basic-auth",
-  "homepage": "https://zapier.com/",
-  "author": "Bryan Helmig <bryan@zapier.com>",
+  "description": "Envoke integration for the Zapier platform",
+  "repository": "marcuswarrenca/envoke-zapier",
+  "homepage": "https://envoke.com/",
+  "author": "Marcus Warren <marcus@envoke.com>",
   "license": "BSD-3-Clause",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "npm": ">=3.10.10"
   },
   "dependencies": {
-    "zapier-platform-core": "6.0.0"
+    "zapier-platform-core": "7.2.2"
   },
   "devDependencies": {
     "mocha": "3.2.0",

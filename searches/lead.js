@@ -15,71 +15,64 @@ module.exports = {
 		// search fields.
 		inputFields: [
 
-
-			//TODO: list all the fields we support searching for here...
-
-			/*
-			{
-				key: 'style',
-				type: 'string',
-				label: 'Style',
-				helpText: 'Cuisine style to limit to the search to (i.e. mediterranean or italian).'
-			}
-			*/
-
 			{
 				key: 'id',
 				type: 'string',
+				//TODO: example could add these helpers to each field
+				/*
 				label: 'ID',
 				helpText: 'The lead ID in Envoke'
+				*/
 			},
+
 			{
 				key: 'remote_id',
 				type: 'string',
-				label: 'remote_id',
-				helpText: ''
 			},
 			{
 				key: 'business_unit',
 				type: 'string',
-				label: 'business_unit',
-				helpText: ''
 			},
 			{
 				key: 'rule_rating',
 				type: 'string',
-				label: 'rule_rating',
-				helpText: ''
 			},
 			{
 				key: 'marketing_rating_status',
 				type: 'string',
-				label: 'marketing_rating_status',
-				helpText: ''
 			},
 			{
 				key: 'salesperson',
 				type: 'string',
-				label: 'salesperson',
-				helpText: ''
 			},
 			{
 				key: 'sales_rating_status',
 				type: 'string',
-				label: 'sales_rating_status',
-				helpText: ''
 			},
 			{
 				key: 'opportunity',
 				type: 'string',
-				label: 'opportunity',
-				helpText: ''
 			},
 			{
 				key: 'sale',
 				type: 'string',
-				label: 'sale',
-				helpText: ''
+			},
+
+			{
+				key: 'email',
+				type: 'string',
+			},
+			{
+				key: 'contact_id',
+				type: 'string',
+			},
+			{
+				key: 'contact_remote_id',
+				type: 'string',
+			},
+			{
+				key: 'company',
+				type: 'string',
 			},
 
 		],
