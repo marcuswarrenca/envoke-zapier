@@ -1,20 +1,21 @@
 // We recommend writing your creates separate like this and rolling them
 // into the App definition at the end.
 module.exports = {
-	key: 'contact',
+	key: 'update_contact',
 
 	// You'll want to provide some helpful display labels and descriptions
 	// for users. Zapier will put them into the UX.
 	noun: 'Contact',
 	display: {
-		label: 'Create Contact',
-		description: 'Creates a new contact.'
+		label: 'Update Contact',
+		description: 'Updates a contact.'
 	},
 
 	// `operation` is where the business logic goes.
 	operation: {
 		inputFields: [
 
+			{ key: "id", label: "id" },
 			{ key: "remote_id", label: "remote_id" },
 			{ key: "first_name", label: "first_name" },
 			{ key: "last_name", label: "last_name" },
@@ -44,8 +45,8 @@ module.exports = {
 			const requestBody = bundle.inputData;
 
 			const promise = z.request({
-				url: 'https://e1.envoke.com/v1/contacts',
-				method: 'POST',
+				url: 'https://e1d.envoke.com/v1/contacts',
+				method: 'PATCH',
 
 				body: JSON.stringify(requestBody),
 

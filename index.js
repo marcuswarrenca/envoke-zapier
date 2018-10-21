@@ -15,6 +15,8 @@ const contact_search = require('./searches/contact');
 
 const lead_create = require('./creates/lead');
 const contact_create = require('./creates/contact');
+const lead_update = require('./creates/update_lead');
+const contact_update = require('./creates/update_contact');
 
 // Add this helper function above the App definition
 const addContentTypeToHeader = (request, z, bundle) => {
@@ -62,6 +64,8 @@ const App = {
   creates: {
 		[lead_create.key]: lead_create,
 		[contact_create.key]: contact_create,
+    [lead_update.key]: lead_update,
+    [contact_update.key]: contact_update,
   }
 };
 

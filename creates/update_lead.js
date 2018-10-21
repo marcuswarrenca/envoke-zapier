@@ -1,14 +1,14 @@
 // We recommend writing your creates separate like this and rolling them
 // into the App definition at the end.
 module.exports = {
-	key: 'lead',
+	key: 'update_lead',
 
 	// You'll want to provide some helpful display labels and descriptions
 	// for users. Zapier will put them into the UX.
 	noun: 'Lead',
 	display: {
-		label: 'Create Lead',
-		description: 'Creates a new lead.'
+		label: 'Update Lead',
+		description: 'Updates a lead.'
 	},
 
 	// `operation` is where the business logic goes.
@@ -24,9 +24,7 @@ module.exports = {
 			{key: 'style', required: false, type: 'string', helpText: 'Explain what style of cuisine this is.'},
 			*/
 
-
-			//TODO: id required for updates, not creates
-			// { key: "id", label: "id" },
+			{ key: "id", label: "id" },
 
 			{ key: "contact_id", label: "contact_id" },
 			{ key: "contact_remote_id", label: "contact_remote_id" },
@@ -57,7 +55,7 @@ module.exports = {
 			{ key: "salesperson", label: "salesperson" },
 			{ key: "create_time", label: "create_time" },
 			{ key: "create_note", label: "create_note" },
-			{ key: "rule_rating", label: "rule_rating", required: true },
+			{ key: "rule_rating", label: "rule_rating" },
 			{ key: "marketing_rating_status", label: "marketing_rating_status" },
 			{ key: "marketing_rating", label: "marketing_rating" },
 			{ key: "marketing_rating_time", label: "marketing_rating_time" },
@@ -137,8 +135,8 @@ module.exports = {
 
 
 			const promise = z.request({
-				url: 'https://e1.envoke.com/v1/leads',
-				method: 'POST',
+				url: 'https://e1d.envoke.com/v1/leads',
+				method: 'PATCH',
 
 				body: JSON.stringify(requestBody),
 
