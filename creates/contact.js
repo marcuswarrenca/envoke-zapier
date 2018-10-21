@@ -44,7 +44,7 @@ module.exports = {
 			const requestBody = bundle.inputData;
 
 			const promise = z.request({
-				url: 'https://e1d.envoke.com/v1/contacts',
+				url: 'https://e1.envoke.com/v1/contacts',
 				method: 'POST',
 
 				body: JSON.stringify(requestBody),

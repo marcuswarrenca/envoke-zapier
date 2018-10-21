@@ -78,7 +78,7 @@ module.exports = {
 		],
 
 		perform: (z, bundle) => {
-			const url = 'https://e1d.envoke.com/v1/leads';
+			const url = 'https://e1.envoke.com/v1/leads';
 
 			// Put the search value in a query param. The details of how to build
 			// a search URL will depend on how your API works.

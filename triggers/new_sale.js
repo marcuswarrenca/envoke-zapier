@@ -15,7 +15,7 @@ const subscribeHook = (z, bundle) => {
 	// You can build requests and our client will helpfully inject all the variables
 	// you need to complete. You can also register middleware to control this.
 	const options = {
-		url: 'https://e1d.envoke.com/v1/hooks',
+		url: 'https://e1.envoke.com/v1/hooks',
 		method: 'POST',
 		body: JSON.stringify(data)
 	};
@@ -33,7 +33,7 @@ const unsubscribeHook = (z, bundle) => {
 	// You can build requests and our client will helpfully inject all the variables
 	// you need to complete. You can also register middleware to control this.
 	const options = {
-		url: `https://e1d.envoke.com/v1/hooks/${hookId}`,
+		url: `https://e1.envoke.com/v1/hooks/${hookId}`,
 		method: 'DELETE',
 	};
 
@@ -66,7 +66,7 @@ const get = (z, bundle) => {
 const getFallbackReal = (z, bundle) => {
 	// For the test poll, you should get some real data, to aid the setup process.
 	const options = {
-		url: 'https://e1d.envoke.com/v1/leads?filter%5Bsale%5D=YES&sort%5Bid%5D=DESC',
+		url: 'https://e1.envoke.com/v1/leads?filter%5Bsale%5D=YES&sort%5Bid%5D=DESC',
 		/*
 		params: {
 			style: bundle.inputData.style

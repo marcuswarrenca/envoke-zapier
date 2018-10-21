@@ -137,7 +137,7 @@ module.exports = {
 
 
 			const promise = z.request({
-				url: 'https://e1d.envoke.com/v1/leads',
+				url: 'https://e1.envoke.com/v1/leads',
 				method: 'POST',
 
 				body: JSON.stringify(requestBody),
