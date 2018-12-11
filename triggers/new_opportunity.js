@@ -119,6 +119,10 @@ module.exports = {
 			// Flattened contact fields
 			"contact_id": "321654",
 			"contact_remote_id": "",
+
+			//TODO: we may want to make this contact_external_id? However we don't have this for leads, and this change will require bm repo changes
+			"external_id": "14b3b88d36c625ba0c6334c511ccd34c",
+
 			"first_name": "John",
 			"last_name": "Purchase",
 			"title": "Chief Architect",
@@ -195,6 +199,10 @@ module.exports = {
 
 			{ key: "contact_id", label: "contact_id" },
 			{ key: "contact_remote_id", label: "contact_remote_id" },
+
+			//TODO: we may want to make this contact_external_id? However we don't have this for leads, and this change will require bm repo changes
+			{ key: "external_id", label: "external_id" },
+
 			{ key: "first_name", label: "first_name" },
 			{ key: "last_name", label: "last_name" },
 			{ key: "title", label: "title" },
