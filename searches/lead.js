@@ -88,12 +88,12 @@ module.exports = {
 
 			[ 'id', 'remote_id', 'business_unit', 'rule_rating', 'marketing_rating_status', 'salesperson', 'sales_rating_status', 'opportunity', 'sale', ].forEach((key) => {
 				//TODO: allow searches for empty strings?
-				bundle.inputData[key] && ( options.params[encodeURIComponent(`filter[${key}]`)] = bundle.inputData[key] );
+				bundle.inputData[key] && ( options.params[`filter[${key}]`] = bundle.inputData[key] );
 			});
 
 			[ 'email', 'contact_id', 'contact_remote_id', 'company', ].forEach((key) => {
 				//TODO: allow searches for empty strings?
-				bundle.inputData[key] && ( options.params[encodeURIComponent(`filter[contact.${key}]`)] = bundle.inputData[key] );
+				bundle.inputData[key] && ( options.params[`filter[contact.${key}]`] = bundle.inputData[key] );
 			});
 
 			// Fatten the contact fields in the response

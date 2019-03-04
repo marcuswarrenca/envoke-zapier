@@ -62,7 +62,7 @@ module.exports = {
 
 			[ 'id', 'remote_id', 'email', 'company', 'country', 'province', 'consent_status', ].forEach((key) => {
 				//TODO: allow searches for empty strings?
-				bundle.inputData[key] && ( options.params[encodeURIComponent(`filter[${key}]`)] = bundle.inputData[key] );
+				bundle.inputData[key] && ( options.params[`filter[${key}]`] = bundle.inputData[key] );
 			});
 
 			return z.request(url, options).then(response => JSON.parse(response.content));
