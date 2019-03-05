@@ -68,7 +68,7 @@ module.exports = {
 
 				const responseBody = JSON.parse(response.content);
 
-				if ( response.status == 400 ) {
+				if ( response.status === 400 ) {
 					throw new Error(responseBody.result_text);
 				}
 

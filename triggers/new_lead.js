@@ -1,3 +1,8 @@
+
+//TODO: expand this and make it better
+// handle arrays (with both 1 / 2 arguments)? break on return false?
+const ForEach = (obj, fn) => Object.keys(obj).forEach(key => fn(key, obj[key], obj));
+
 const subscribeHook = (z, bundle) => {
 	// `z.console.log()` is similar to `console.log()`.
 
@@ -46,7 +51,7 @@ const get = (z, bundle) => {
 	// bundle.cleanedRequest will include the parsed JSON object (if it's not a
 	// test poll) and also a .querystring property with the URL's query string.
 
-	//TODO: is there anything we need to do here?
+	//TODO: in example it returns as array — is there a reason for that?
 	/*
 	const recipe = {
 		id: bundle.cleanedRequest.id,
@@ -60,7 +65,25 @@ const get = (z, bundle) => {
 	return [recipe];
 	*/
 
-	return bundle.cleanedRequest;
+	//TODO: this will have to be duplicated in all of the "lead" type triggers... so probably should make it an include
+	const flattenedData = bundle.cleanedRequest;
+
+	ForEach(flattenedData.contact, (key, value) => {
+
+		switch ( key ) {
+
+			case 'id':
+			case 'remote_id':
+			// case 'external_id':
+				flattenedData[`contact_${key}`] = value;
+				break;
+			default:
+				flattenedData[key] = value;
+				break;
+		}
+	});
+
+	return flattenedData;
 };
 
 const getFallbackReal = (z, bundle) => {
