@@ -1,3 +1,28 @@
+const ForOwn = require('lodash/forOwn');
+
+//TODO: create a module for this...
+const additionalFields = (z, bundle) => {
+
+	const request = z.request('https://e1.envoke.com/v1/customfields');
+
+	// json is like [{"key":"field_1","label":"Label for Custom Field"}]
+	return request.then(response => {
+
+		const responseContent = z.JSON.parse(response.content);
+		const outputFields = [];
+
+		// z.console.log(responseContent);
+
+		ForOwn(responseContent, (value, key) => {
+			outputFields.push({ key: `custom_fields.${value}`, label: value });
+		});
+
+		// z.console.log(outputFields);
+
+		return outputFields;
+	});
+};
+
 // We recommend writing your creates separate like this and rolling them
 // into the App definition at the end.
 module.exports = {
@@ -15,27 +40,33 @@ module.exports = {
 	operation: {
 		inputFields: [
 
-			{ key: "remote_id", label: "remote_id" },
-			{ key: "first_name", label: "first_name" },
-			{ key: "last_name", label: "last_name" },
-			{ key: "title", label: "title" },
-			{ key: "email", label: "email" },
-			{ key: "company", label: "company" },
-			{ key: "phone", label: "phone" },
-			{ key: "address_1", label: "address_1" },
-			{ key: "address_2", label: "address_2" },
-			{ key: "city", label: "city" },
-			{ key: "country", label: "country" },
-			{ key: "province", label: "province" },
-			{ key: "postal_code", label: "postal_code" },
-			{ key: "website", label: "website" },
-			{ key: "language", label: "language" },
-			{ key: "feedback", label: "feedback" },
-			{ key: "consent_status", label: "consent_status" },
-			{ key: "consent_description", label: "consent_description" },
-			{ key: "custom_fields", label: "custom_fields" },
-			{ key: "interests", label: "interests" },
-			{ key: "autoresponders", label: "autoresponders" },
+			{ key: "email", required: true },
+
+			{ key: "first_name" },
+			{ key: "last_name" },
+
+			{ key: "company" },
+			{ key: "phone" },
+
+			{ key: "remote_id" },
+
+			{ key: "address_1" },
+			{ key: "address_2" },
+			{ key: "city" },
+			{ key: "country" },
+			{ key: "province" },
+			{ key: "postal_code" },
+			{ key: "website" },
+			{ key: "title" },
+			{ key: "language" },
+			{ key: "feedback" },
+			{ key: "consent_status", choices: [ 'Express', 'Implied - Inquiry', 'Implied - Transaction', 'Implied - No Expiry', 'Not Provided', 'Revoked', 'Envoke Spam Reported' ] },
+			{ key: "consent_description" },
+
+			{ key: "interests", list: true, dynamic: 'interestList.id.name' },
+			{ key: "autoresponders", list: true, dynamic: 'autoresponderList.id.name' },
+
+			additionalFields
 
 		],
 
@@ -43,35 +74,66 @@ module.exports = {
 
 			const requestBody = bundle.inputData;
 
+			const customFields = {};
+			const interests = {};
+			const autoresponders = {};
+
+			ForOwn(requestBody, (value, key) => {
+
+				if ( key.indexOf('custom_fields.') === -1 ) {
+
+					switch ( key ) {
+
+						case 'interests':
+							value.forEach((interest) => {
+								interests[interest] = 'set';
+							});
+							break;
+
+						case 'autoresponders':
+							value.forEach((autoresponder) => {
+								autoresponders[autoresponder] = 'set';
+							});
+							break;
+					}
+
+				} else {
+
+					const customFieldKey = key.split('custom_fields.')[1];
+					customFields[customFieldKey] = value;
+
+					delete requestBody[key];
+				}
+
+			});
+
+			requestBody.custom_fields = customFields;
+			requestBody.interests = interests;
+			requestBody.autoresponders = autoresponders;
+
 			const promise = z.request({
 				url: 'https://e1.envoke.com/v1/contacts',
 				method: 'POST',
-
 				body: JSON.stringify(requestBody),
-
-				/*
-				body: JSON.stringify({
-					name: bundle.inputData.name,
-					directions: bundle.inputData.directions,
-					authorId: bundle.inputData.authorId,
-					style: bundle.inputData.style,
-				}),
-				*/
-
 				headers: {
 					'content-type': 'application/json',
 				}
 			});
 
+			// z.console.log(JSON.stringify(requestBody));
+
 			return promise.then((response) => {
 
-				const responseBody = JSON.parse(response.content);
+				const responseBody = z.JSON.parse(response.content);
 
 				if ( response.status === 400 ) {
 					throw new Error(responseBody.result_text);
+				} else if ( response.status === 500 ) {
+					z.console.log("Internal error from request: " + JSON.stringify(requestBody));
+					throw new Error("Internal error from request: " + JSON.stringify(requestBody));
 				}
 
-				return JSON.parse(response.content);
+				return z.JSON.parse(response.content);
 			});
 		},
 
@@ -110,32 +172,37 @@ module.exports = {
 			],
 		},
 
+		/*
 		outputFields: [
 
-			{ key: "id", label: "id" },
-			{ key: "remote_id", label: "remote_id" },
-			{ key: "first_name", label: "first_name" },
-			{ key: "last_name", label: "last_name" },
-			{ key: "title", label: "title" },
-			{ key: "email", label: "email" },
-			{ key: "company", label: "company" },
-			{ key: "phone", label: "phone" },
-			{ key: "address_1", label: "address_1" },
-			{ key: "address_2", label: "address_2" },
-			{ key: "city", label: "city" },
-			{ key: "country", label: "country" },
-			{ key: "province", label: "province" },
-			{ key: "postal_code", label: "postal_code" },
-			{ key: "website", label: "website" },
-			{ key: "language", label: "language" },
-			{ key: "feedback", label: "feedback" },
-			{ key: "consent_status", label: "consent_status" },
-			{ key: "consent_description", label: "consent_description" },
-			{ key: "custom_fields", label: "custom_fields" },
-			{ key: "interests", label: "interests" },
-			{ key: "autoresponders", label: "autoresponders" },
+			{ key: "id",  },
+			{ key: "remote_id",  },
+			{ key: "first_name",  },
+			{ key: "last_name",  },
+			{ key: "title",  },
+			{ key: "email",  },
+			{ key: "company",  },
+			{ key: "phone",  },
+			{ key: "address_1",  },
+			{ key: "address_2",  },
+			{ key: "city",  },
+			{ key: "country",  },
+			{ key: "province",  },
+			{ key: "postal_code",  },
+			{ key: "website",  },
+			{ key: "language",  },
+			{ key: "feedback",  },
+			{ key: "consent_status",  },
+			{ key: "consent_description",  },
+
+			// { key: "custom_fields",  },
+			// { key: "interests",  },
+			// { key: "autoresponders",  },
+
+			additionalFields,
 
 		]
+		*/
 
 	}
 };

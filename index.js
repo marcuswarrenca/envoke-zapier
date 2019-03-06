@@ -1,3 +1,4 @@
+const ForOwn = require('lodash/forOwn');
 
 const authentication = require('./authentication');
 
@@ -40,6 +41,85 @@ const App = {
   ],
 
   resources: {
+
+		interest: {
+			key: 'interest',
+
+			noun: 'Interest',
+
+			list: {
+
+				display: {
+					label: 'List of Interests',
+					description: 'Select from the list of interests'
+				},
+
+				operation: {
+					perform: (z, bundle) => {
+
+						const request = z.request('https://e1.envoke.com/v1/interests');
+
+						return request.then(response => {
+
+							const responseContent = z.JSON.parse(response.content);
+							const outputFields = [];
+
+							// z.console.log(responseContent);
+
+							ForOwn(responseContent, (value, key) => {
+								outputFields.push({ id: key, name: value });
+							});
+
+							// z.console.log(outputFields);
+
+							return outputFields;
+						});
+
+					}
+				},
+
+			}
+
+		},
+
+		autoresponder: {
+			key: 'autoresponder',
+
+			noun: 'Nurture Campaign',
+
+			list: {
+
+				display: {
+					label: 'List of Nuture Campaigns',
+					description: 'Select from the list of nurture campaigns'
+				},
+
+				operation: {
+
+					//TODO: refactor this since it's the same as above for interests
+					perform: (z, bundle) => {
+
+						const request = z.request('https://e1.envoke.com/v1/autoresponders');
+
+						return request.then(response => {
+
+							const responseContent = z.JSON.parse(response.content);
+							const outputFields = [];
+
+							ForOwn(responseContent, (value, key) => {
+								outputFields.push({ id: key, name: value });
+							});
+
+							return outputFields;
+						});
+
+					}
+				},
+
+			}
+
+		},
+
   },
 
   // If you want your trigger to show up, you better include it here!

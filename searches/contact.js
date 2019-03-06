@@ -65,7 +65,7 @@ module.exports = {
 				bundle.inputData[key] && ( options.params[`filter[${key}]`] = bundle.inputData[key] );
 			});
 
-			return z.request(url, options).then(response => JSON.parse(response.content));
+			return z.request(url, options).then(response => z.JSON.parse(response.content));
 		},
 
 		sample: {

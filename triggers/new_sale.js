@@ -22,7 +22,7 @@ const subscribeHook = (z, bundle) => {
 
 	// You may return a promise or a normal data structure from any perform method.
 	return z.request(options)
-		.then((response) => JSON.parse(response.content));
+		.then((response) => z.JSON.parse(response.content));
 };
 
 const unsubscribeHook = (z, bundle) => {
@@ -39,7 +39,7 @@ const unsubscribeHook = (z, bundle) => {
 
 	// You may return a promise or a normal data structure from any perform method.
 	return z.request(options)
-		.then((response) => JSON.parse(response.content));
+		.then((response) => z.JSON.parse(response.content));
 };
 
 const get = (z, bundle) => {
@@ -75,7 +75,7 @@ const getFallbackReal = (z, bundle) => {
 	};
 
 	return z.request(options)
-		.then((response) => JSON.parse(response.content));
+		.then((response) => z.JSON.parse(response.content));
 };
 
 // We recommend writing your triggers separate like this and rolling them

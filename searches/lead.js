@@ -98,7 +98,7 @@ module.exports = {
 
 			// Fatten the contact fields in the response
 			return z.request(url, options).then(response => {
-				const responseContent = JSON.parse(response.content);
+				const responseContent = z.JSON.parse(response.content);
 				return responseContent.map((responseItem) => {
 
 					const contactData = responseItem.contact;

@@ -1,3 +1,28 @@
+const ForOwn = require('lodash/forOwn');
+
+//TODO: create a module for this...
+const additionalFields = (z, bundle) => {
+
+	const request = z.request('https://e1.envoke.com/v1/customfields');
+
+	// json is like [{"key":"field_1","label":"Label for Custom Field"}]
+	return request.then(response => {
+
+		const responseContent = z.JSON.parse(response.content);
+		const outputFields = [];
+
+		// z.console.log(responseContent);
+
+		ForOwn(responseContent, (value, key) => {
+			outputFields.push({ key: `custom_fields.${value}`, label: value });
+		});
+
+		// z.console.log(outputFields);
+
+		return outputFields;
+	});
+};
+
 // We recommend writing your creates separate like this and rolling them
 // into the App definition at the end.
 module.exports = {
@@ -14,78 +39,69 @@ module.exports = {
 	// `operation` is where the business logic goes.
 	operation: {
 		inputFields: [
+			
+			// { key: "business_unit",  },
+			{ key: "remote_id",  },
+			{ key: "marketing_user",  },
+			{ key: "salesperson",  },
+			// { key: "create_time",  },
+			{ key: "create_note",  },
+			{ key: "rule_rating", required: true },
+			{ key: "marketing_rating_status", choices: [ "Not applicable", "Open", "Passed to sales", "Deferred", "Lead updated" ] },
+			{ key: "marketing_rating",  },
+			// { key: "marketing_rating_time",  },
+			{ key: "marketing_rating_note",  },
+			{ key: "sales_rating_status", choices: [ "Not applicable", "Open", "Rated good", "Rated bad", "Contact attempted" ] },
+			{ key: "sales_rating",  },
+			// { key: "sales_rating_time",  },
+			{ key: "sales_rating_note",  },
+			{ key: "opportunity", choices: [ 'Yes', 'None', 'Cancelled' ] },
+			// { key: "opportunity_time",  },
+			{ key: "opportunity_note",  },
+			{ key: "sale", choices: [ 'Yes', 'None', 'Cancelled' ] },
+			// { key: "sale_time",  },
+			{ key: "sale_note",  },
+			{ key: "revenue",  },
+			{ key: "cost_of_goods_sold",  },
+			// { key: "lead_region",  },
+			// { key: "sales_channel",  },
+			// { key: "industry",  },
+			// { key: "timing",  },
+			// { key: "budget",  },
+			{ key: "marketing_source",  },
+			{ key: "marketing_medium",  },
+			{ key: "marketing_campaign",  },
 
-			//TODO: ... see examples below and create field directory here...
-
-			/*
-			{key: 'name', required: true, type: 'string'},
-			{key: 'directions', required: true, type: 'text', helpText: 'Explain how should one make the recipe, step by step.'},
-			{key: 'authorId', required: true, type: 'integer', label: 'Author ID'},
-			{key: 'style', required: false, type: 'string', helpText: 'Explain what style of cuisine this is.'},
-			*/
+			{ key: "visitor_id",  },
+			{ key: "visit_id",  },
+			{ key: "pageview_id",  },
 
 
-			//TODO: id required for updates, not creates
-			// { key: "id", label: "id" },
+			{ key: "contact_id",  },
+			{ key: "contact_remote_id",  },
+			{ key: "first_name",  },
+			{ key: "last_name",  },
+			{ key: "title",  },
+			{ key: "email",  },
+			{ key: "company",  },
+			{ key: "phone",  },
+			{ key: "address_1",  },
+			{ key: "address_2",  },
+			{ key: "city",  },
+			{ key: "country",  },
+			{ key: "province",  },
+			{ key: "postal_code",  },
+			{ key: "website",  },
+			{ key: "language",  },
+			{ key: "feedback",  },
+			{ key: "consent_status", choices: [ 'Express', 'Implied - Inquiry', 'Implied - Transaction', 'Implied - No Expiry', 'Not Provided', 'Revoked', 'Envoke Spam Reported' ] },
+			{ key: "consent_description",  },
 
-			{ key: "contact_id", label: "contact_id" },
-			{ key: "contact_remote_id", label: "contact_remote_id" },
-			{ key: "first_name", label: "first_name" },
-			{ key: "last_name", label: "last_name" },
-			{ key: "title", label: "title" },
-			{ key: "email", label: "email" },
-			{ key: "company", label: "company" },
-			{ key: "phone", label: "phone" },
-			{ key: "address_1", label: "address_1" },
-			{ key: "address_2", label: "address_2" },
-			{ key: "city", label: "city" },
-			{ key: "country", label: "country" },
-			{ key: "province", label: "province" },
-			{ key: "postal_code", label: "postal_code" },
-			{ key: "website", label: "website" },
-			{ key: "language", label: "language" },
-			{ key: "feedback", label: "feedback" },
-			{ key: "consent_status", label: "consent_status" },
-			{ key: "consent_description", label: "consent_description" },
-			{ key: "custom_fields", label: "custom_fields" },
-			{ key: "interests", label: "interests" },
-			{ key: "autoresponders", label: "autoresponders" },
+			// { key: "custom_fields",  },
+			{ key: "interests", list: true, dynamic: 'interestList.id.name' },
+			{ key: "autoresponders", list: true, dynamic: 'autoresponderList.id.name' },
 
-			{ key: "business_unit", label: "business_unit" },
-			{ key: "remote_id", label: "remote_id" },
-			{ key: "marketing_user", label: "marketing_user" },
-			{ key: "salesperson", label: "salesperson" },
-			{ key: "create_time", label: "create_time" },
-			{ key: "create_note", label: "create_note" },
-			{ key: "rule_rating", label: "rule_rating", required: true },
-			{ key: "marketing_rating_status", label: "marketing_rating_status" },
-			{ key: "marketing_rating", label: "marketing_rating" },
-			{ key: "marketing_rating_time", label: "marketing_rating_time" },
-			{ key: "marketing_rating_note", label: "marketing_rating_note" },
-			{ key: "sales_rating_status", label: "sales_rating_status" },
-			{ key: "sales_rating", label: "sales_rating" },
-			{ key: "sales_rating_time", label: "sales_rating_time" },
-			{ key: "sales_rating_note", label: "sales_rating_note" },
-			{ key: "opportunity", label: "opportunity" },
-			{ key: "opportunity_time", label: "opportunity_time" },
-			{ key: "opportunity_note", label: "opportunity_note" },
-			{ key: "sale", label: "sale" },
-			{ key: "sale_time", label: "sale_time" },
-			{ key: "sale_note", label: "sale_note" },
-			{ key: "revenue", label: "revenue" },
-			{ key: "cost_of_goods_sold", label: "cost_of_goods_sold" },
-			{ key: "lead_region", label: "lead_region" },
-			{ key: "sales_channel", label: "sales_channel" },
-			{ key: "industry", label: "industry" },
-			{ key: "timing", label: "timing" },
-			{ key: "budget", label: "budget" },
-			{ key: "marketing_source", label: "marketing_source" },
-			{ key: "marketing_medium", label: "marketing_medium" },
-			{ key: "marketing_campaign", label: "marketing_campaign" },
-			{ key: "visitor_id", label: "visitor_id" },
-			{ key: "visit_id", label: "visit_id" },
-			{ key: "pageview_id", label: "pageview_id" },
-
+			additionalFields
 		],
 
 		perform: (z, bundle) => {
@@ -114,9 +130,11 @@ module.exports = {
 				"feedback",
 				"consent_status",
 				"consent_description",
+
 				"custom_fields",
 				"interests",
 				"autoresponders",
+
 			].forEach((contactField) => {
 
 				switch ( contactField ) {
@@ -136,21 +154,57 @@ module.exports = {
 			});
 
 
+			
+			const customFields = {};
+			const interests = {};
+			const autoresponders = {};
+
+			ForOwn(requestBody, (value, key) => {
+
+				if ( key.indexOf('custom_fields.') === -1 ) {
+
+				} else {
+
+					const customFieldKey = key.split('custom_fields.')[1];
+					customFields[customFieldKey] = value;
+
+					delete requestBody[key];
+				}
+			});
+
+
+			ForOwn(requestBody.contact, (value, key) => {
+
+				switch ( key ) {
+
+					case 'interests':
+						value.forEach((interest) => {
+							interests[interest] = 'set';
+						});
+						break;
+
+					case 'autoresponders':
+						value.forEach((autoresponder) => {
+							autoresponders[autoresponder] = 'set';
+						});
+						break;
+				}
+				
+			});
+			
+
+			requestBody.contact.custom_fields = customFields;
+			requestBody.contact.interests = interests;
+			requestBody.contact.autoresponders = autoresponders;
+			
+			
+			
+			
+
 			const promise = z.request({
 				url: 'https://e1.envoke.com/v1/leads',
 				method: 'POST',
-
 				body: JSON.stringify(requestBody),
-
-				/*
-				body: JSON.stringify({
-					name: bundle.inputData.name,
-					directions: bundle.inputData.directions,
-					authorId: bundle.inputData.authorId,
-					style: bundle.inputData.style,
-				}),
-				*/
-
 				headers: {
 					'content-type': 'application/json',
 				}
@@ -159,10 +213,13 @@ module.exports = {
 			//TODO: flatten the contact fields in response.content.result_data
 			return promise.then((response) => {
 
-				const responseBody = JSON.parse(response.content);
+				const responseBody = z.JSON.parse(response.content);
 
 				if ( response.status === 400 ) {
 					throw new Error(responseBody.result_text);
+				} else if ( response.status === 500 ) {
+					z.console.log("Internal error from request: " + JSON.stringify(requestBody));
+					throw new Error("Internal error from request: " + JSON.stringify(requestBody));
 				}
 
 				return responseBody;
@@ -192,6 +249,7 @@ module.exports = {
 			"feedback": "Hello. I'm interested in buying many of your widgets, please have someone contact me immediately!",
 			"consent_status": "Express",
 			"consent_description": "Lead is interested in receiving our widget updates",
+
 			"custom_fields": {
 				"widget_name": "Gold Deluxe Model 5X33"
 			},
@@ -241,69 +299,71 @@ module.exports = {
 			"pageview_id": "1455032370950"
 		},
 
+		/*
 		outputFields: [
 
-			{ key: "id", label: "id" },
+			{ key: "id",  },
 
-			{ key: "contact_id", label: "contact_id" },
-			{ key: "contact_remote_id", label: "contact_remote_id" },
-			{ key: "first_name", label: "first_name" },
-			{ key: "last_name", label: "last_name" },
-			{ key: "title", label: "title" },
-			{ key: "email", label: "email" },
-			{ key: "company", label: "company" },
-			{ key: "phone", label: "phone" },
-			{ key: "address_1", label: "address_1" },
-			{ key: "address_2", label: "address_2" },
-			{ key: "city", label: "city" },
-			{ key: "country", label: "country" },
-			{ key: "province", label: "province" },
-			{ key: "postal_code", label: "postal_code" },
-			{ key: "website", label: "website" },
-			{ key: "language", label: "language" },
-			{ key: "feedback", label: "feedback" },
-			{ key: "consent_status", label: "consent_status" },
-			{ key: "consent_description", label: "consent_description" },
-			{ key: "custom_fields", label: "custom_fields" },
-			{ key: "interests", label: "interests" },
-			{ key: "autoresponders", label: "autoresponders" },
+			{ key: "contact_id",  },
+			{ key: "contact_remote_id",  },
+			{ key: "first_name",  },
+			{ key: "last_name",  },
+			{ key: "title",  },
+			{ key: "email",  },
+			{ key: "company",  },
+			{ key: "phone",  },
+			{ key: "address_1",  },
+			{ key: "address_2",  },
+			{ key: "city",  },
+			{ key: "country",  },
+			{ key: "province",  },
+			{ key: "postal_code",  },
+			{ key: "website",  },
+			{ key: "language",  },
+			{ key: "feedback",  },
+			{ key: "consent_status",  },
+			{ key: "consent_description",  },
+			{ key: "custom_fields",  },
+			{ key: "interests",  },
+			{ key: "autoresponders",  },
 
-			{ key: "business_unit", label: "business_unit" },
-			{ key: "remote_id", label: "remote_id" },
-			{ key: "marketing_user", label: "marketing_user" },
-			{ key: "salesperson", label: "salesperson" },
-			{ key: "create_time", label: "create_time" },
-			{ key: "create_note", label: "create_note" },
-			{ key: "rule_rating", label: "rule_rating" },
-			{ key: "marketing_rating_status", label: "marketing_rating_status" },
-			{ key: "marketing_rating", label: "marketing_rating" },
-			{ key: "marketing_rating_time", label: "marketing_rating_time" },
-			{ key: "marketing_rating_note", label: "marketing_rating_note" },
-			{ key: "sales_rating_status", label: "sales_rating_status" },
-			{ key: "sales_rating", label: "sales_rating" },
-			{ key: "sales_rating_time", label: "sales_rating_time" },
-			{ key: "sales_rating_note", label: "sales_rating_note" },
-			{ key: "opportunity", label: "opportunity" },
-			{ key: "opportunity_time", label: "opportunity_time" },
-			{ key: "opportunity_note", label: "opportunity_note" },
-			{ key: "sale", label: "sale" },
-			{ key: "sale_time", label: "sale_time" },
-			{ key: "sale_note", label: "sale_note" },
-			{ key: "revenue", label: "revenue" },
-			{ key: "cost_of_goods_sold", label: "cost_of_goods_sold" },
-			{ key: "lead_region", label: "lead_region" },
-			{ key: "sales_channel", label: "sales_channel" },
-			{ key: "industry", label: "industry" },
-			{ key: "timing", label: "timing" },
-			{ key: "budget", label: "budget" },
-			{ key: "marketing_source", label: "marketing_source" },
-			{ key: "marketing_medium", label: "marketing_medium" },
-			{ key: "marketing_campaign", label: "marketing_campaign" },
-			{ key: "visitor_id", label: "visitor_id" },
-			{ key: "visit_id", label: "visit_id" },
-			{ key: "pageview_id", label: "pageview_id" },
+			{ key: "business_unit",  },
+			{ key: "remote_id",  },
+			{ key: "marketing_user",  },
+			{ key: "salesperson",  },
+			{ key: "create_time",  },
+			{ key: "create_note",  },
+			{ key: "rule_rating",  },
+			{ key: "marketing_rating_status",  },
+			{ key: "marketing_rating",  },
+			{ key: "marketing_rating_time",  },
+			{ key: "marketing_rating_note",  },
+			{ key: "sales_rating_status",  },
+			{ key: "sales_rating",  },
+			{ key: "sales_rating_time",  },
+			{ key: "sales_rating_note",  },
+			{ key: "opportunity",  },
+			{ key: "opportunity_time",  },
+			{ key: "opportunity_note",  },
+			{ key: "sale",  },
+			{ key: "sale_time",  },
+			{ key: "sale_note",  },
+			{ key: "revenue",  },
+			{ key: "cost_of_goods_sold",  },
+			{ key: "lead_region",  },
+			{ key: "sales_channel",  },
+			{ key: "industry",  },
+			{ key: "timing",  },
+			{ key: "budget",  },
+			{ key: "marketing_source",  },
+			{ key: "marketing_medium",  },
+			{ key: "marketing_campaign",  },
+			{ key: "visitor_id",  },
+			{ key: "visit_id",  },
+			{ key: "pageview_id",  },
 
 		]
+		*/
 
 	}
 };

@@ -1,7 +1,4 @@
-
-//TODO: expand this and make it better
-// handle arrays (with both 1 / 2 arguments)? break on return false?
-const ForEach = (obj, fn) => Object.keys(obj).forEach(key => fn(key, obj[key], obj));
+const _ = require('lodash');
 
 const subscribeHook = (z, bundle) => {
 	// `z.console.log()` is similar to `console.log()`.
@@ -27,7 +24,7 @@ const subscribeHook = (z, bundle) => {
 
 	// You may return a promise or a normal data structure from any perform method.
 	return z.request(options)
-		.then((response) => JSON.parse(response.content));
+		.then((response) => z.JSON.parse(response.content));
 };
 
 const unsubscribeHook = (z, bundle) => {
@@ -44,7 +41,7 @@ const unsubscribeHook = (z, bundle) => {
 
 	// You may return a promise or a normal data structure from any perform method.
 	return z.request(options)
-		.then((response) => JSON.parse(response.content));
+		.then((response) => z.JSON.parse(response.content));
 };
 
 const get = (z, bundle) => {
@@ -68,7 +65,7 @@ const get = (z, bundle) => {
 	//TODO: this will have to be duplicated in all of the "lead" type triggers... so probably should make it an include
 	const flattenedData = bundle.cleanedRequest;
 
-	ForEach(flattenedData.contact, (key, value) => {
+	_.forOwn(flattenedData.contact, (value, key) => {
 
 		switch ( key ) {
 
@@ -98,7 +95,7 @@ const getFallbackReal = (z, bundle) => {
 	};
 
 	return z.request(options)
-		.then((response) => JSON.parse(response.content));
+		.then((response) => z.JSON.parse(response.content));
 };
 
 // We recommend writing your triggers separate like this and rolling them
