@@ -1,27 +1,5 @@
 const ForOwn = require('lodash/forOwn');
-
-//TODO: create a module for this...
-const additionalFields = (z, bundle) => {
-
-	const request = z.request('https://e1.envoke.com/v1/customfields');
-
-	// json is like [{"key":"field_1","label":"Label for Custom Field"}]
-	return request.then(response => {
-
-		const responseContent = z.JSON.parse(response.content);
-		const outputFields = [];
-
-		// z.console.log(responseContent);
-
-		ForOwn(responseContent, (value, key) => {
-			outputFields.push({ key: `custom_fields.${value}`, label: value });
-		});
-
-		// z.console.log(outputFields);
-
-		return outputFields;
-	});
-};
+const additionalFields = require('../helpers/additional_fields');
 
 
 // We recommend writing your creates separate like this and rolling them
@@ -43,35 +21,32 @@ module.exports = {
 
 			{ key: "id", helpText: "One of ID / Email is required to update a contact" },
 			{ key: "email", helpText: "One of ID / Email is required to update a contact" },
-			
-			
-			{ key: "first_name",  },
-			{ key: "last_name",  },
-			
-			
-			{ key: "company",  },
-			{ key: "phone",  },
 
-			{ key: "remote_id",  },
-			
-			{ key: "address_1",  },
-			{ key: "address_2",  },
-			{ key: "city",  },
-			{ key: "country",  },
-			{ key: "province",  },
-			{ key: "postal_code",  },
-			{ key: "website",  },
+			{ key: "consent_status", choices: [ 'Express', 'Implied - Inquiry', 'Implied - Transaction', 'Implied - No Expiry', 'Not Provided', 'Revoked' ] },
+			{ key: "consent_description" },
 
-			{ key: "title",  },
-			{ key: "language",  },
-			{ key: "feedback",  },
-			{ key: "consent_status", choices: [ 'Express', 'Implied - Inquiry', 'Implied - Transaction', 'Implied - No Expiry', 'Not Provided', 'Revoked', 'Envoke Spam Reported' ] },
-			{ key: "consent_description",  },
+			{ key: "first_name" },
+			{ key: "last_name" },
 
+			{ key: "company" },
+			{ key: "phone" },
+
+			{ key: "remote_id" },
 			
+			{ key: "address_1" },
+			{ key: "address_2" },
+			{ key: "city" },
+			{ key: "country" },
+			{ key: "province" },
+			{ key: "postal_code" },
+			{ key: "website" },
+
+			{ key: "title" },
+			{ key: "language" },
+			{ key: "feedback" },
+
 			{ key: "interests", list: true, dynamic: 'interestList.id.name' },
-			{ key: "autoresponders", list: true, dynamic: 'autoresponderList.id.name' },
-
+			{ key: "autoresponders", label: "Nurture campaigns", list: true, dynamic: 'autoresponderList.id.name', helpText: "The contact must have a valid consent status (express / implied) in order to set nurture campaigns" },
 		],
 
 		perform: (z, bundle) => {
@@ -121,7 +96,7 @@ module.exports = {
 			
 
 			const promise = z.request({
-				url: 'https://e1.envoke.com/v1/contacts',
+				url: `https://${process.env.SUBDOMAIN}.envoke.com/v1/contacts`,
 				method: 'PATCH',
 				body: JSON.stringify(requestBody),
 				headers: {
@@ -182,28 +157,28 @@ module.exports = {
 		/*
 		outputFields: [
 
-			{ key: "id",  },
-			{ key: "remote_id",  },
-			{ key: "first_name",  },
-			{ key: "last_name",  },
-			{ key: "title",  },
-			{ key: "email",  },
-			{ key: "company",  },
-			{ key: "phone",  },
-			{ key: "address_1",  },
-			{ key: "address_2",  },
-			{ key: "city",  },
-			{ key: "country",  },
-			{ key: "province",  },
-			{ key: "postal_code",  },
-			{ key: "website",  },
-			{ key: "language",  },
-			{ key: "feedback",  },
-			{ key: "consent_status",  },
-			{ key: "consent_description",  },
-			{ key: "custom_fields",  },
-			{ key: "interests",  },
-			{ key: "autoresponders",  },
+			{ key: "id" },
+			{ key: "remote_id" },
+			{ key: "first_name" },
+			{ key: "last_name" },
+			{ key: "title" },
+			{ key: "email" },
+			{ key: "company" },
+			{ key: "phone" },
+			{ key: "address_1" },
+			{ key: "address_2" },
+			{ key: "city" },
+			{ key: "country" },
+			{ key: "province" },
+			{ key: "postal_code" },
+			{ key: "website" },
+			{ key: "language" },
+			{ key: "feedback" },
+			{ key: "consent_status" },
+			{ key: "consent_description" },
+			{ key: "custom_fields" },
+			{ key: "interests" },
+			{ key: "autoresponders" },
 
 		]
 		*/

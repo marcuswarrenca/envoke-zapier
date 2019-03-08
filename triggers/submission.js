@@ -1,167 +1,9 @@
-const subscribeHook = (z, bundle) => {
-	// `z.console.log()` is similar to `console.log()`.
-
-	// z.console.log('console says hello world!');
-
-	// bundle.targetUrl has the Hook URL this app should call when a recipe is created.
-	const data = {
-		url: bundle.targetUrl,
-		type: 'submission',
-
-		//TODO: include optional properties here to filter by
-		//style: bundle.inputData.style
-	};
-
-	// You can build requests and our client will helpfully inject all the variables
-	// you need to complete. You can also register middleware to control this.
-	const options = {
-		url: 'https://e1.envoke.com/v1/hooks',
-		method: 'POST',
-		body: JSON.stringify(data)
-	};
-
-	// You may return a promise or a normal data structure from any perform method.
-	return z.request(options)
-		.then((response) => z.JSON.parse(response.content));
-};
-
-const unsubscribeHook = (z, bundle) => {
-	// bundle.subscribeData contains the parsed response JSON from the subscribe
-	// request made initially.
-	const hookId = bundle.subscribeData.id;
-
-	// You can build requests and our client will helpfully inject all the variables
-	// you need to complete. You can also register middleware to control this.
-	const options = {
-		url: `https://e1.envoke.com/v1/hooks/${hookId}`,
-		method: 'DELETE',
-	};
-
-	// You may return a promise or a normal data structure from any perform method.
-	return z.request(options)
-		.then((response) => z.JSON.parse(response.content));
-};
+const subscribeHook = require('../helpers/subscribe_hook');
+const unsubscribeHook = require('../helpers/unsubscribe_hook');
+const getFallbackReal = require('../helpers/get_fallback_submission_example');
 
 const get = (z, bundle) => {
-	// bundle.cleanedRequest will include the parsed JSON object (if it's not a
-	// test poll) and also a .querystring property with the URL's query string.
-
-	//TODO: is there anything we need to do here?
-	/*
-	const recipe = {
-		id: bundle.cleanedRequest.id,
-		name: bundle.cleanedRequest.name,
-		directions: bundle.cleanedRequest.directions,
-		style: bundle.cleanedRequest.style,
-		authorId: bundle.cleanedRequest.authorId,
-		createdAt: bundle.cleanedRequest.createdAt
-	};
-
-	return [recipe];
-	*/
-
 	return bundle.cleanedRequest;
-};
-
-const getFallbackReal = (z, bundle) => {
-
-	//TODO: we don't currently have any way to expose real "submission" record data through the API, so just returning this example here
-	//TODO: maybe we don't even need to do this? Zapier will just use the sample defined below?
-	// For the test poll, you should get some real data, to aid the setup process.
-
-	return [
-		{
-			"id": "1234",
-			"contact_id": "22345",
-			"contact_external_id": "12345678901234567890123456789012",
-			"contact_remote_id": "",
-			"contact_created": true,
-			"lead_id": "1234",
-			"lead_remote_id": "",
-			"submission_time": "2016-02-05T09:13:06+00:00",
-			"submission_type": "form",
-			"submission_user": "",
-			"form_name": "Widget Request Form",
-			"form_url": "https://www.widgets.com/getsome",
-			"first_name": "John",
-			"last_name": "Johnson",
-			"title": "Leading Leader",
-			"email": "new-contact@api-testing.com",
-			"company": "Envoke",
-			"phone": "555-1234",
-			"address_1": "555 Brant Street",
-			"address_2": "",
-			"city": "Toronto",
-			"country": "CA",
-			"province": "ON",
-			"postal_code": "L1V 3X5",
-			"website": "",
-			"language": "en",
-			"feedback": "",
-			"consent_status": "Express",
-			"consent_description": "Express consent given on website homepage form.",
-			"consent_effective_date": "2017-10-27T18:19:57+00:00",
-			"consent_expiry": "",
-			"marketing_source": "Google",
-			"marketing_medium": "cpc",
-			"marketing_campaign": "early-funnel-campaign",
-			"visitor_id": "1434636651779",
-			"visit_id": "1455028009329",
-			"pageview_id": "1455032370950",
-			"custom_fields": {
-				"custom_field_name1": "Field Value 1"
-			},
-			"interests": [
-				{"id": "1234", "name": "Consumer", "state": "Set"},
-				{"id": "1235", "name": "International", "state": "Set"},
-				{"id": "1236", "name": "Business Products", "state": "Unset"}
-			],
-			"subscriptions": [
-				{"id": "2237", "name": "Newsletter", "state": "Set"},
-				{"id": "2238", "name": "Special offers", "state": "Set"}
-			],
-			"autoresponders": [
-				{"id": "3238", "name": "Marketing Sequence 1", "state": "Set"},
-				{"id": "3239", "name": "Whitepaper Download", "state": "Set"}
-			],
-			"events": [
-				{"id": "4240", "name": "introduction course", "state": "Fulfilled"},
-				{"id": "4241", "name": "advanced course", "state": "Confirmed"}
-			],
-			"webinars": [
-				{"id": "5242", "name": "widget demo", "state": "Assigned"},
-				{"id": "5243", "name": "learn about widgets", "state": "Canceled"}
-			],
-			"downloads": [
-				{"id": "6244", "name": "abc widget", "state": "Fulfilled"},
-				{"id": "6245", "name": "widgets ebook", "state": "Fulfilled"}
-			],
-			"qualification_questions": {
-				"business_unit": "B2B Widgets",
-				"lead_region": "North America",
-				"sales_channel": "Consumer",
-				"industry": "Telecommunications",
-				"timing": "< 1 month",
-				"budget": "$5000+"
-			}
-		}
-	];
-
-
-	/*
-	const options = {
-
-		//TODO: ...
-		url: 'https://e1.envoke.com/v1/leads?filter%5Bmarketing_rating_status%5D=passed%20to%20sales',
-
-		params: {
-			style: bundle.inputData.style
-		}
-	};
-
-	return z.request(options)
-		.then((response) => JSON.parse(response.content));
-	*/
 };
 
 // We recommend writing your triggers separate like this and rolling them
@@ -190,7 +32,7 @@ module.exports = {
 
 		type: 'hook',
 
-		performSubscribe: subscribeHook,
+		performSubscribe: subscribeHook('submission'),
 		performUnsubscribe: unsubscribeHook,
 
 		perform: get,
@@ -199,86 +41,15 @@ module.exports = {
 		// In cases where Zapier needs to show an example record to the user, but we are unable to get a live example
 		// from the API, Zapier will fallback to this hard-coded sample. It should reflect the data structure of
 		// returned records, and have obviously dummy values that we can show to any user.
-		sample: {
-			"id": "1234",
-			"contact_id": "22345",
-			"contact_external_id": "12345678901234567890123456789012",
-			"contact_remote_id": "",
-			"contact_created": true,
-			"lead_id": "1234",
-			"lead_remote_id": "",
-			"submission_time": "2016-02-05T09:13:06+00:00",
-			"submission_type": "form",
-			"submission_user": "",
-			"form_name": "Widget Request Form",
-			"form_url": "https://www.widgets.com/getsome",
-			"first_name": "John",
-			"last_name": "Johnson",
-			"title": "Leading Leader",
-			"email": "new-contact@api-testing.com",
-			"company": "Envoke",
-			"phone": "555-1234",
-			"address_1": "555 Brant Street",
-			"address_2": "",
-			"city": "Toronto",
-			"country": "CA",
-			"province": "ON",
-			"postal_code": "L1V 3X5",
-			"website": "",
-			"language": "en",
-			"feedback": "",
-			"consent_status": "Express",
-			"consent_description": "Express consent given on website homepage form.",
-			"consent_effective_date": "2017-10-27T18:19:57+00:00",
-			"consent_expiry": "",
-			"marketing_source": "Google",
-			"marketing_medium": "cpc",
-			"marketing_campaign": "early-funnel-campaign",
-			"visitor_id": "1434636651779",
-			"visit_id": "1455028009329",
-			"pageview_id": "1455032370950",
-			"custom_fields": {
-				"custom_field_name1": "Field Value 1"
-			},
-			"interests": [
-				{"id": "1234", "name": "Consumer", "state": "Set"},
-				{"id": "1235", "name": "International", "state": "Set"},
-				{"id": "1236", "name": "Business Products", "state": "Unset"}
-			],
-			"subscriptions": [
-				{"id": "2237", "name": "Newsletter", "state": "Set"},
-				{"id": "2238", "name": "Special offers", "state": "Set"}
-			],
-			"autoresponders": [
-				{"id": "3238", "name": "Marketing Sequence 1", "state": "Set"},
-				{"id": "3239", "name": "Whitepaper Download", "state": "Set"}
-			],
-			"events": [
-				{"id": "4240", "name": "introduction course", "state": "Fulfilled"},
-				{"id": "4241", "name": "advanced course", "state": "Confirmed"}
-			],
-			"webinars": [
-				{"id": "5242", "name": "widget demo", "state": "Assigned"},
-				{"id": "5243", "name": "learn about widgets", "state": "Canceled"}
-			],
-			"downloads": [
-				{"id": "6244", "name": "abc widget", "state": "Fulfilled"},
-				{"id": "6245", "name": "widgets ebook", "state": "Fulfilled"}
-			],
-			"qualification_questions": {
-				"business_unit": "B2B Widgets",
-				"lead_region": "North America",
-				"sales_channel": "Consumer",
-				"industry": "Telecommunications",
-				"timing": "< 1 month",
-				"budget": "$5000+"
-			}
-		},
+
+		//TODO: for submission type triggers we are currently hard coding a sample also used by getFallbackReal
+		sample: getFallbackReal()[0],
 
 		// If the resource can have fields that are custom on a per-user basis, define a function to fetch the custom
 		// field definitions. The result will be used to augment the sample.
 		// outputFields: () => { return []; }
 		// Alternatively, a static field definition should be provided, to specify labels for the fields
+		/*
 		outputFields: [
 
 			{ key: "id", label: "id" },
@@ -328,5 +99,6 @@ module.exports = {
 			{ key: "qualification_questions", label: "qualification_questions" },
 
 		]
+		*/
 	}
 };

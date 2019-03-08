@@ -1,77 +1,16 @@
-const subscribeHook = (z, bundle) => {
-	// `z.console.log()` is similar to `console.log()`.
-
-	// z.console.log('console says hello world!');
-
-	// bundle.targetUrl has the Hook URL this app should call when a recipe is created.
-	const data = {
-		url: bundle.targetUrl,
-		type: 'passed_to_sales',
-
-		//TODO: include optional properties here to filter by
-		//style: bundle.inputData.style
-	};
-
-	// You can build requests and our client will helpfully inject all the variables
-	// you need to complete. You can also register middleware to control this.
-	const options = {
-		url: 'https://e1.envoke.com/v1/hooks',
-		method: 'POST',
-		body: JSON.stringify(data)
-	};
-
-	// You may return a promise or a normal data structure from any perform method.
-	return z.request(options)
-		.then((response) => z.JSON.parse(response.content));
-};
-
-const unsubscribeHook = (z, bundle) => {
-	// bundle.subscribeData contains the parsed response JSON from the subscribe
-	// request made initially.
-	const hookId = bundle.subscribeData.id;
-
-	// You can build requests and our client will helpfully inject all the variables
-	// you need to complete. You can also register middleware to control this.
-	const options = {
-		url: `https://e1.envoke.com/v1/hooks/${hookId}`,
-		method: 'DELETE',
-	};
-
-	// You may return a promise or a normal data structure from any perform method.
-	return z.request(options)
-		.then((response) => z.JSON.parse(response.content));
-};
+const subscribeHook = require('../helpers/subscribe_hook');
+const unsubscribeHook = require('../helpers/unsubscribe_hook');
+const flattenLeadResponse = require('../helpers/flatten_lead_response');
+const getFallbackLeadExample = require('../helpers/get_fallback_lead_example');
 
 const get = (z, bundle) => {
-	// bundle.cleanedRequest will include the parsed JSON object (if it's not a
-	// test poll) and also a .querystring property with the URL's query string.
-
-	//TODO: is there anything we need to do here?
-	/*
-	const recipe = {
-		id: bundle.cleanedRequest.id,
-		name: bundle.cleanedRequest.name,
-		directions: bundle.cleanedRequest.directions,
-		style: bundle.cleanedRequest.style,
-		authorId: bundle.cleanedRequest.authorId,
-		createdAt: bundle.cleanedRequest.createdAt
-	};
-
-	return [recipe];
-	*/
-
-	return bundle.cleanedRequest;
+	return flattenLeadResponse(bundle.cleanedRequest);
 };
 
 const getFallbackReal = (z, bundle) => {
 	// For the test poll, you should get some real data, to aid the setup process.
 	const options = {
-		url: 'https://e1.envoke.com/v1/leads?filter%5Bmarketing_rating_status%5D=passed%20to%20sales&sort%5Bid%5D=DESC',
-		/*
-		params: {
-			style: bundle.inputData.style
-		}
-		*/
+		url: `https://${process.env.SUBDOMAIN}.envoke.com/v1/leads?filter%5Bmarketing_rating_status%5D=passed%20to%20sales&sort%5Bid%5D=DESC`,
 	};
 
 	return z.request(options)
@@ -104,7 +43,7 @@ module.exports = {
 
 		type: 'hook',
 
-		performSubscribe: subscribeHook,
+		performSubscribe: subscribeHook('passed_to_sales'),
 		performUnsubscribe: unsubscribeHook,
 
 		perform: get,
@@ -113,86 +52,13 @@ module.exports = {
 		// In cases where Zapier needs to show an example record to the user, but we are unable to get a live example
 		// from the API, Zapier will fallback to this hard-coded sample. It should reflect the data structure of
 		// returned records, and have obviously dummy values that we can show to any user.
-		sample: {
-			"id": "1234",
-
-			// Flattened contact fields
-			"contact_id": "321654",
-			"contact_remote_id": "",
-
-			//TODO: we may want to make this contact_external_id? However we don't have this for leads, and this change will require bm repo changes
-			"external_id": "14b3b88d36c625ba0c6334c511ccd34c",
-
-			"first_name": "John",
-			"last_name": "Purchase",
-			"title": "Chief Architect",
-			"email": "new-contact@api-testing.com",
-			"company": "Art Vandelay Import/Exports",
-			"phone": "647-987-1234",
-			"address_1": "401 Richmond Street West",
-			"address_2": "",
-			"city": "Toronto",
-			"country": "CA",
-			"province": "ON",
-			"postal_code": "M5V 5K7",
-			"website": "",
-			"language": "en",
-			"feedback": "Hello. I'm interested in buying many of your widgets, please have someone contact me immediately!",
-			"consent_status": "Express",
-			"consent_description": "Lead is interested in receiving our widget updates",
-			"custom_fields": {
-				"widget_name": "Gold Deluxe Model 5X33"
-			},
-			"interests": [
-				"Business Products",
-				"International",
-				"Consumer"
-			],
-			"autoresponders": [
-				"Marketing Sequence 1",
-				"Whitepaper Download"
-			],
-
-			"business_unit": "B2B Widgets",
-			"remote_id": "",
-			"marketing_user": "Jane Manager",
-			"salesperson": "Tom Salesman",
-			"create_time": "2016-02-05 09:13:06",
-			"create_note": "",
-			"rule_rating": "Hot",
-			"marketing_rating_status": "Passed to sales",
-			"marketing_rating": "Hot",
-			"marketing_rating_time": "2016-02-05 10:57:42",
-			"marketing_rating_note": "This is a great lead! You should check it out",
-			"sales_rating_status": "Rated good",
-			"sales_rating": "Contacted: Good",
-			"sales_rating_time": "2016-02-06 14:17:37",
-			"sales_rating_note": "",
-			"opportunity": "Yes",
-			"opportunity_time": "2016-02-06 14:17:37",
-			"opportunity_note": "They are interested in buying widgets",
-			"sale": "Yes",
-			"sale_time": "2016-02-08 11:43:27",
-			"sale_note": "Purchased 6 widgets",
-			"revenue": "7595.00",
-			"cost_of_goods_sold": "6200.00",
-			"lead_region": "North America",
-			"sales_channel": "Consumer",
-			"industry": "Telecommunications",
-			"timing": "< 1 month",
-			"budget": "$5000+",
-			"marketing_source": "Google",
-			"marketing_medium": "cpc",
-			"marketing_campaign": "early-funnel-campaign",
-			"visitor_id": "1434636651779",
-			"visit_id": "1455028009329",
-			"pageview_id": "1455032370950"
-		},
+		sample: getFallbackLeadExample(),
 
 		// If the resource can have fields that are custom on a per-user basis, define a function to fetch the custom
 		// field definitions. The result will be used to augment the sample.
 		// outputFields: () => { return []; }
 		// Alternatively, a static field definition should be provided, to specify labels for the fields
+		/*
 		outputFields: [
 
 			{ key: "id", label: "id" },
@@ -260,5 +126,6 @@ module.exports = {
 			{ key: "pageview_id", label: "pageview_id" },
 
 		]
+		*/
 	}
 };

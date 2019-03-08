@@ -1,27 +1,5 @@
 const ForOwn = require('lodash/forOwn');
-
-//TODO: create a module for this...
-const additionalFields = (z, bundle) => {
-
-	const request = z.request('https://e1.envoke.com/v1/customfields');
-
-	// json is like [{"key":"field_1","label":"Label for Custom Field"}]
-	return request.then(response => {
-
-		const responseContent = z.JSON.parse(response.content);
-		const outputFields = [];
-
-		// z.console.log(responseContent);
-
-		ForOwn(responseContent, (value, key) => {
-			outputFields.push({ key: `custom_fields.${value}`, label: value });
-		});
-
-		// z.console.log(outputFields);
-
-		return outputFields;
-	});
-};
+const additionalFields = require('../helpers/additional_fields');
 
 // We recommend writing your creates separate like this and rolling them
 // into the App definition at the end.
@@ -40,66 +18,70 @@ module.exports = {
 	operation: {
 		inputFields: [
 			
-			// { key: "business_unit",  },
-			{ key: "remote_id",  },
-			{ key: "marketing_user",  },
-			{ key: "salesperson",  },
-			// { key: "create_time",  },
-			{ key: "create_note",  },
+			// { key: "business_unit" },
+			{ key: "remote_id" },
+			{ key: "marketing_user" },
+			{ key: "salesperson" },
+			// { key: "create_time" },
+			{ key: "create_note" },
 			{ key: "rule_rating", required: true },
 			{ key: "marketing_rating_status", choices: [ "Not applicable", "Open", "Passed to sales", "Deferred", "Lead updated" ] },
-			{ key: "marketing_rating",  },
-			// { key: "marketing_rating_time",  },
-			{ key: "marketing_rating_note",  },
+			{ key: "marketing_rating" },
+			// { key: "marketing_rating_time" },
+			{ key: "marketing_rating_note" },
 			{ key: "sales_rating_status", choices: [ "Not applicable", "Open", "Rated good", "Rated bad", "Contact attempted" ] },
-			{ key: "sales_rating",  },
-			// { key: "sales_rating_time",  },
-			{ key: "sales_rating_note",  },
+			{ key: "sales_rating" },
+			// { key: "sales_rating_time" },
+			{ key: "sales_rating_note" },
 			{ key: "opportunity", choices: [ 'Yes', 'None', 'Cancelled' ] },
-			// { key: "opportunity_time",  },
-			{ key: "opportunity_note",  },
+			// { key: "opportunity_time" },
+			{ key: "opportunity_note" },
 			{ key: "sale", choices: [ 'Yes', 'None', 'Cancelled' ] },
-			// { key: "sale_time",  },
-			{ key: "sale_note",  },
-			{ key: "revenue",  },
-			{ key: "cost_of_goods_sold",  },
-			// { key: "lead_region",  },
-			// { key: "sales_channel",  },
-			// { key: "industry",  },
-			// { key: "timing",  },
-			// { key: "budget",  },
-			{ key: "marketing_source",  },
-			{ key: "marketing_medium",  },
-			{ key: "marketing_campaign",  },
+			// { key: "sale_time" },
+			{ key: "sale_note" },
+			{ key: "revenue" },
+			{ key: "cost_of_goods_sold" },
+			// { key: "lead_region" },
+			// { key: "sales_channel" },
+			// { key: "industry" },
+			// { key: "timing" },
+			// { key: "budget" },
+			{ key: "marketing_source" },
+			{ key: "marketing_medium" },
+			{ key: "marketing_campaign" },
 
-			{ key: "visitor_id",  },
-			{ key: "visit_id",  },
-			{ key: "pageview_id",  },
+			{ key: "visitor_id" },
+			{ key: "visit_id" },
+			{ key: "pageview_id" },
 
 
-			{ key: "contact_id",  },
-			{ key: "contact_remote_id",  },
-			{ key: "first_name",  },
-			{ key: "last_name",  },
-			{ key: "title",  },
-			{ key: "email",  },
-			{ key: "company",  },
-			{ key: "phone",  },
-			{ key: "address_1",  },
-			{ key: "address_2",  },
-			{ key: "city",  },
-			{ key: "country",  },
-			{ key: "province",  },
-			{ key: "postal_code",  },
-			{ key: "website",  },
-			{ key: "language",  },
-			{ key: "feedback",  },
-			{ key: "consent_status", choices: [ 'Express', 'Implied - Inquiry', 'Implied - Transaction', 'Implied - No Expiry', 'Not Provided', 'Revoked', 'Envoke Spam Reported' ] },
-			{ key: "consent_description",  },
+			{ key: "contact_id" },
+			{ key: "email" },
 
-			// { key: "custom_fields",  },
+			{ key: "consent_status", choices: [ 'Express', 'Implied - Inquiry', 'Implied - Transaction', 'Implied - No Expiry', 'Not Provided', 'Revoked' ] },
+			{ key: "consent_description" },
+
+			{ key: "first_name" },
+			{ key: "last_name" },
+
+			{ key: "company" },
+			{ key: "phone" },
+
+			{ key: "contact_remote_id" },
+
+			{ key: "address_1" },
+			{ key: "address_2" },
+			{ key: "city" },
+			{ key: "country" },
+			{ key: "province" },
+			{ key: "postal_code" },
+			{ key: "website" },
+			{ key: "title" },
+			{ key: "language" },
+			{ key: "feedback" },
+
 			{ key: "interests", list: true, dynamic: 'interestList.id.name' },
-			{ key: "autoresponders", list: true, dynamic: 'autoresponderList.id.name' },
+			{ key: "autoresponders", label: "Nurture campaigns", list: true, dynamic: 'autoresponderList.id.name', helpText: "The contact must have a valid consent status (express / implied) in order to set nurture campaigns" },
 
 			additionalFields
 		],
@@ -202,7 +184,7 @@ module.exports = {
 			
 
 			const promise = z.request({
-				url: 'https://e1.envoke.com/v1/leads',
+				url: `https://${process.env.SUBDOMAIN}.envoke.com/v1/leads`,
 				method: 'POST',
 				body: JSON.stringify(requestBody),
 				headers: {
@@ -302,65 +284,65 @@ module.exports = {
 		/*
 		outputFields: [
 
-			{ key: "id",  },
+			{ key: "id" },
 
-			{ key: "contact_id",  },
-			{ key: "contact_remote_id",  },
-			{ key: "first_name",  },
-			{ key: "last_name",  },
-			{ key: "title",  },
-			{ key: "email",  },
-			{ key: "company",  },
-			{ key: "phone",  },
-			{ key: "address_1",  },
-			{ key: "address_2",  },
-			{ key: "city",  },
-			{ key: "country",  },
-			{ key: "province",  },
-			{ key: "postal_code",  },
-			{ key: "website",  },
-			{ key: "language",  },
-			{ key: "feedback",  },
-			{ key: "consent_status",  },
-			{ key: "consent_description",  },
-			{ key: "custom_fields",  },
-			{ key: "interests",  },
-			{ key: "autoresponders",  },
+			{ key: "contact_id" },
+			{ key: "contact_remote_id" },
+			{ key: "first_name" },
+			{ key: "last_name" },
+			{ key: "title" },
+			{ key: "email" },
+			{ key: "company" },
+			{ key: "phone" },
+			{ key: "address_1" },
+			{ key: "address_2" },
+			{ key: "city" },
+			{ key: "country" },
+			{ key: "province" },
+			{ key: "postal_code" },
+			{ key: "website" },
+			{ key: "language" },
+			{ key: "feedback" },
+			{ key: "consent_status" },
+			{ key: "consent_description" },
+			{ key: "custom_fields" },
+			{ key: "interests" },
+			{ key: "autoresponders" },
 
-			{ key: "business_unit",  },
-			{ key: "remote_id",  },
-			{ key: "marketing_user",  },
-			{ key: "salesperson",  },
-			{ key: "create_time",  },
-			{ key: "create_note",  },
-			{ key: "rule_rating",  },
-			{ key: "marketing_rating_status",  },
-			{ key: "marketing_rating",  },
-			{ key: "marketing_rating_time",  },
-			{ key: "marketing_rating_note",  },
-			{ key: "sales_rating_status",  },
-			{ key: "sales_rating",  },
-			{ key: "sales_rating_time",  },
-			{ key: "sales_rating_note",  },
-			{ key: "opportunity",  },
-			{ key: "opportunity_time",  },
-			{ key: "opportunity_note",  },
-			{ key: "sale",  },
-			{ key: "sale_time",  },
-			{ key: "sale_note",  },
-			{ key: "revenue",  },
-			{ key: "cost_of_goods_sold",  },
-			{ key: "lead_region",  },
-			{ key: "sales_channel",  },
-			{ key: "industry",  },
-			{ key: "timing",  },
-			{ key: "budget",  },
-			{ key: "marketing_source",  },
-			{ key: "marketing_medium",  },
-			{ key: "marketing_campaign",  },
-			{ key: "visitor_id",  },
-			{ key: "visit_id",  },
-			{ key: "pageview_id",  },
+			{ key: "business_unit" },
+			{ key: "remote_id" },
+			{ key: "marketing_user" },
+			{ key: "salesperson" },
+			{ key: "create_time" },
+			{ key: "create_note" },
+			{ key: "rule_rating" },
+			{ key: "marketing_rating_status" },
+			{ key: "marketing_rating" },
+			{ key: "marketing_rating_time" },
+			{ key: "marketing_rating_note" },
+			{ key: "sales_rating_status" },
+			{ key: "sales_rating" },
+			{ key: "sales_rating_time" },
+			{ key: "sales_rating_note" },
+			{ key: "opportunity" },
+			{ key: "opportunity_time" },
+			{ key: "opportunity_note" },
+			{ key: "sale" },
+			{ key: "sale_time" },
+			{ key: "sale_note" },
+			{ key: "revenue" },
+			{ key: "cost_of_goods_sold" },
+			{ key: "lead_region" },
+			{ key: "sales_channel" },
+			{ key: "industry" },
+			{ key: "timing" },
+			{ key: "budget" },
+			{ key: "marketing_source" },
+			{ key: "marketing_medium" },
+			{ key: "marketing_campaign" },
+			{ key: "visitor_id" },
+			{ key: "visit_id" },
+			{ key: "pageview_id" },
 
 		]
 		*/

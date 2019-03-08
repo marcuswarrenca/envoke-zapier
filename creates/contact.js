@@ -1,27 +1,5 @@
 const ForOwn = require('lodash/forOwn');
-
-//TODO: create a module for this...
-const additionalFields = (z, bundle) => {
-
-	const request = z.request('https://e1.envoke.com/v1/customfields');
-
-	// json is like [{"key":"field_1","label":"Label for Custom Field"}]
-	return request.then(response => {
-
-		const responseContent = z.JSON.parse(response.content);
-		const outputFields = [];
-
-		// z.console.log(responseContent);
-
-		ForOwn(responseContent, (value, key) => {
-			outputFields.push({ key: `custom_fields.${value}`, label: value });
-		});
-
-		// z.console.log(outputFields);
-
-		return outputFields;
-	});
-};
+const additionalFields = require('../helpers/additional_fields');
 
 // We recommend writing your creates separate like this and rolling them
 // into the App definition at the end.
@@ -42,6 +20,9 @@ module.exports = {
 
 			{ key: "email", required: true },
 
+			{ key: "consent_status", required: true, choices: [ 'Express', 'Implied - Inquiry', 'Implied - Transaction', 'Implied - No Expiry', 'Not Provided', 'Revoked' ] },
+			{ key: "consent_description" },
+
 			{ key: "first_name" },
 			{ key: "last_name" },
 
@@ -60,11 +41,9 @@ module.exports = {
 			{ key: "title" },
 			{ key: "language" },
 			{ key: "feedback" },
-			{ key: "consent_status", choices: [ 'Express', 'Implied - Inquiry', 'Implied - Transaction', 'Implied - No Expiry', 'Not Provided', 'Revoked', 'Envoke Spam Reported' ] },
-			{ key: "consent_description" },
 
 			{ key: "interests", list: true, dynamic: 'interestList.id.name' },
-			{ key: "autoresponders", list: true, dynamic: 'autoresponderList.id.name' },
+			{ key: "autoresponders", label: "Nurture campaigns", list: true, dynamic: 'autoresponderList.id.name', helpText: "The contact must have a valid consent status (express / implied) in order to set nurture campaigns" },
 
 			additionalFields
 
@@ -112,7 +91,7 @@ module.exports = {
 			requestBody.autoresponders = autoresponders;
 
 			const promise = z.request({
-				url: 'https://e1.envoke.com/v1/contacts',
+				url: `https://${process.env.SUBDOMAIN}.envoke.com/v1/contacts`,
 				method: 'POST',
 				body: JSON.stringify(requestBody),
 				headers: {

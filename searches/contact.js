@@ -15,44 +15,15 @@ module.exports = {
 		// search fields.
 		inputFields: [
 
-			{
-				key: 'id',
-				type: 'string',
-				//TODO: example could add these helpers to each field
-				/*
-				label: 'ID',
-				helpText: 'The contact ID in Envoke'
-				*/
-			},
-			{
-				key: 'remote_id',
-				type: 'string',
-			},
-			{
-				key: 'email',
-				type: 'string',
-			},
-			{
-				key: 'company',
-				type: 'string',
-			},
-			{
-				key: 'country',
-				type: 'string',
-			},
-			{
-				key: 'province',
-				type: 'string',
-			},
-			{
-				key: 'consent_status',
-				type: 'string',
-			},
+			{ key: 'id' },
+			{ key: 'remote_id' },
+			{ key: 'email' },
+			{ key: 'company' },
 
 		],
 
 		perform: (z, bundle) => {
-			const url = 'https://e1.envoke.com/v1/contacts';
+			const url = `https://${process.env.SUBDOMAIN}.envoke.com/v1/contacts`;
 
 			// Put the search value in a query param. The details of how to build
 			// a search URL will depend on how your API works.
@@ -102,6 +73,7 @@ module.exports = {
 			],
 		},
 
+		/*
 		outputFields: [
 
 			{ key: "id", label: "id" },
@@ -128,5 +100,6 @@ module.exports = {
 			{ key: "autoresponders", label: "autoresponders" },
 
 		]
+		*/
 	}
 };

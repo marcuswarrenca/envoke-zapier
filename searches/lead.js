@@ -15,70 +15,29 @@ module.exports = {
 		// search fields.
 		inputFields: [
 
-			{
-				key: 'id',
-				type: 'string',
-				//TODO: example could add these helpers to each field
-				/*
-				label: 'ID',
-				helpText: 'The lead ID in Envoke'
-				*/
-			},
+			{ key: 'id' },
 
-			{
-				key: 'remote_id',
-				type: 'string',
-			},
-			{
-				key: 'business_unit',
-				type: 'string',
-			},
-			{
-				key: 'rule_rating',
-				type: 'string',
-			},
-			{
-				key: 'marketing_rating_status',
-				type: 'string',
-			},
-			{
-				key: 'salesperson',
-				type: 'string',
-			},
-			{
-				key: 'sales_rating_status',
-				type: 'string',
-			},
-			{
-				key: 'opportunity',
-				type: 'string',
-			},
-			{
-				key: 'sale',
-				type: 'string',
-			},
+			{ key: 'remote_id' },
 
-			{
-				key: 'email',
-				type: 'string',
-			},
-			{
-				key: 'contact_id',
-				type: 'string',
-			},
-			{
-				key: 'contact_remote_id',
-				type: 'string',
-			},
-			{
-				key: 'company',
-				type: 'string',
-			},
+			//TODO: disabling searching by business unit or rule rating for now... we should setup dynamic fetching first?
+			//{ key: 'business_unit' },
+			//{ key: 'rule_rating' },
+
+			{ key: 'marketing_rating_status', choices: [ "Not applicable", "Open", "Passed to sales", "Deferred", "Lead updated" ] },
+			{ key: 'salesperson' },
+			{ key: 'sales_rating_status', choices: [ "Not applicable", "Open", "Rated good", "Rated bad", "Contact attempted" ] },
+			{ key: 'opportunity', choices: [ 'Yes', 'None', 'Cancelled' ] },
+			{ key: 'sale', choices: [ 'Yes', 'None', 'Cancelled' ] },
+
+			{ key: 'email' },
+			{ key: 'contact_id' },
+			{ key: 'contact_remote_id' },
+			{ key: 'company' },
 
 		],
 
 		perform: (z, bundle) => {
-			const url = 'https://e1.envoke.com/v1/leads';
+			const url = `https://${process.env.SUBDOMAIN}.envoke.com/v1/leads`;
 
 			// Put the search value in a query param. The details of how to build
 			// a search URL will depend on how your API works.
@@ -186,6 +145,7 @@ module.exports = {
 			"pageview_id": "1455032370950"
 		},
 
+		/*
 		outputFields: [
 
 			{ key: "id", label: "id" },
@@ -249,5 +209,6 @@ module.exports = {
 			{ key: "pageview_id", label: "pageview_id" },
 
 		]
+		*/
 	}
 };

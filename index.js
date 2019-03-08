@@ -37,59 +37,45 @@ const App = {
     addContentTypeToHeader
   ],
 
-  afterResponse: [
-  ],
+  afterResponse: [],
 
   resources: {
 
 		interest: {
 			key: 'interest',
-
 			noun: 'Interest',
-
 			list: {
-
 				display: {
+					hidden: true,
 					label: 'List of Interests',
 					description: 'Select from the list of interests'
 				},
 
 				operation: {
 					perform: (z, bundle) => {
-
-						const request = z.request('https://e1.envoke.com/v1/interests');
+						const request = z.request(`https://${process.env.SUBDOMAIN}.envoke.com/v1/interests`);
 
 						return request.then(response => {
-
 							const responseContent = z.JSON.parse(response.content);
 							const outputFields = [];
-
-							// z.console.log(responseContent);
 
 							ForOwn(responseContent, (value, key) => {
 								outputFields.push({ id: key, name: value });
 							});
 
-							// z.console.log(outputFields);
-
 							return outputFields;
 						});
-
 					}
 				},
-
 			}
-
 		},
 
 		autoresponder: {
 			key: 'autoresponder',
-
 			noun: 'Nurture Campaign',
-
 			list: {
-
 				display: {
+					hidden: true,
 					label: 'List of Nuture Campaigns',
 					description: 'Select from the list of nurture campaigns'
 				},
@@ -98,11 +84,9 @@ const App = {
 
 					//TODO: refactor this since it's the same as above for interests
 					perform: (z, bundle) => {
-
-						const request = z.request('https://e1.envoke.com/v1/autoresponders');
+						const request = z.request(`https://${process.env.SUBDOMAIN}.envoke.com/v1/autoresponders`);
 
 						return request.then(response => {
-
 							const responseContent = z.JSON.parse(response.content);
 							const outputFields = [];
 
@@ -112,12 +96,9 @@ const App = {
 
 							return outputFields;
 						});
-
 					}
 				},
-
 			}
-
 		},
 
   },
@@ -146,7 +127,35 @@ const App = {
 		[contact_create.key]: contact_create,
     [lead_update.key]: lead_update,
     [contact_update.key]: contact_update,
-  }
+  },
+
+
+	searchOrCreates: {
+		[lead_search.key]: { // the key must match the search
+			key: lead_search.key, // same as above
+			display: {
+				// the label goes up in sidebar
+				// see: https://cdn.zapier.com/storage/photos/04f7951bda0c43dc80eb630251724336.png
+				label: 'Find or create a lead',
+				description: 'Find or create a lead' // this is ignored
+			},
+			search: lead_search.key,
+			create: lead_create.key
+		},
+		[contact_search.key]: { // the key must match the search
+			key: contact_search.key, // same as above
+			display: {
+				// the label goes up in sidebar
+				// see: https://cdn.zapier.com/storage/photos/04f7951bda0c43dc80eb630251724336.png
+				label: 'Find or create a contact',
+				description: 'Find or create a contact' // this is ignored
+			},
+			search: contact_search.key,
+			create: contact_create.key
+		}
+	},
+
+
 };
 
 // Finally, export the app.
