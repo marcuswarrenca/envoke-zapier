@@ -39,6 +39,25 @@ module.exports = {
 			{ key: "opportunity", choices: [ 'Yes', 'None', 'Cancelled' ]  },
 			// { key: "opportunity_time" },
 			{ key: "opportunity_note" },
+
+
+			//TODO: an example of dynamic fields... for example we could show opportunity_note only if opportunity has been set or cancelled
+			/*
+			{
+				key: 'type',
+				required: true,
+				choices: { 1: 'cake', 2: 'ice cream', 3: 'cookie' },
+				altersDynamicFields: true
+			},
+			function(z, bundle) {
+				if (bundle.inputData.type === '2') {
+					return [{ key: 'with_sprinkles', type: 'boolean' }];
+				}
+				return [];
+			},
+			*/
+
+
 			{ key: "sale", choices: [ 'Yes', 'None', 'Cancelled' ]  },
 			// { key: "sale_time" },
 			{ key: "sale_note" },
