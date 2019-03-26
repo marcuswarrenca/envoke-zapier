@@ -105,8 +105,15 @@ module.exports = {
 
 				const responseBody = z.JSON.parse(response.content);
 
+				//TODO: refactor this into a helpers function...
 				if ( response.status === 400 ) {
-					throw new Error(responseBody.result_text);
+
+					if ( responseBody.result_data && responseBody.result_data.errors ) {
+						throw new Error(responseBody.result_data.errors.join('\n'));
+					} else {
+						throw new Error(responseBody.result_text);
+					}
+
 				} else if ( response.status === 500 ) {
 					z.console.log("Internal error from request: " + JSON.stringify(requestBody));
 					throw new Error("Internal error from request: " + JSON.stringify(requestBody));
