@@ -119,19 +119,24 @@ module.exports = {
 
 			].forEach((contactField) => {
 
-				switch ( contactField ) {
+				if ( bundle.inputData[contactField] ) {
 
-					case 'contact_id':
-						bundle.inputData[contactField] && ( requestBody.contact['id'] = bundle.inputData[contactField] );
-						break;
-					case 'contact_remote_id':
-						bundle.inputData[contactField] && ( requestBody.contact['remote_id'] = bundle.inputData[contactField] );
-						break;
+					switch ( contactField ) {
 
-					default:
-						//TODO: support passing through empty strings?
-						bundle.inputData[contactField] && ( requestBody.contact[contactField] = bundle.inputData[contactField] );
-						break;
+						case 'contact_id':
+							requestBody.contact['id'] = bundle.inputData[contactField];
+							break;
+						case 'contact_remote_id':
+							requestBody.contact['remote_id'] = bundle.inputData[contactField];
+							break;
+
+						default:
+							//TODO: support passing through empty strings?
+							requestBody.contact[contactField] = bundle.inputData[contactField];
+							break;
+					}
+
+					delete requestBody[contactField];
 				}
 			});
 
