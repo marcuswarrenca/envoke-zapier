@@ -67,6 +67,7 @@ module.exports = {
 
 					delete contactData.id;
 					delete contactData.remote_id;
+					delete responseItem.contact;
 
 					return Object.assign(responseItem, contactData);
 				});

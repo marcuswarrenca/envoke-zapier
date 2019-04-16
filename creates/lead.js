@@ -214,7 +214,22 @@ module.exports = {
 					throw new Error("Internal error from request: " + JSON.stringify(requestBody));
 				}
 
-				return responseBody;
+
+				const resultData = responseBody.result_data;
+
+				const contactData = resultData.contact;
+
+				resultData.contact_id = contactData.id;
+				resultData.contact_remote_id = contactData.remote_id;
+
+				delete contactData.id;
+				delete contactData.remote_id;
+
+				delete resultData.contact;
+
+				return Object.assign(resultData, contactData);
+
+				// return responseBody;
 			});
 		},
 

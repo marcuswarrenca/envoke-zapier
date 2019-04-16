@@ -119,7 +119,7 @@ module.exports = {
 					throw new Error("Internal error from request: " + JSON.stringify(requestBody));
 				}
 
-				return z.JSON.parse(response.content);
+				return responseBody.result_data;
 			});
 		},
 

@@ -237,6 +237,8 @@ module.exports = {
 					throw new Error("Internal error from request: " + JSON.stringify(requestBody));
 				}
 
+				//TODO: similar to how we handle return result_data in the creates, we should flatten the contact fields and return the lead object here
+
 				return responseBody;
 			});
 		},
