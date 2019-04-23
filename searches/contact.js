@@ -36,7 +36,22 @@ module.exports = {
 				bundle.inputData[key] && ( options.params[`filter[${key}]`] = bundle.inputData[key] );
 			});
 
-			return z.request(url, options).then(response => z.JSON.parse(response.content));
+			return z.request(url, options).then(response => {
+
+				//TODO: refactor this into a helpers function...
+				if ( response.status === 400 ) {
+					if ( responseBody.result_data && responseBody.result_data.errors ) {
+						throw new Error(responseBody.result_data.errors.join('\n'));
+					} else {
+						throw new Error(responseBody.result_text);
+					}
+				} else if ( response.status === 500 ) {
+					z.console.log("Internal error from request: " + JSON.stringify(requestBody));
+					throw new Error("Internal error from request: " + JSON.stringify(requestBody));
+				}
+
+				return z.JSON.parse(response.content);
+			});
 		},
 
 		sample: {

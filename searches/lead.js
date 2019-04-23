@@ -16,18 +16,17 @@ module.exports = {
 		inputFields: [
 
 			{ key: 'id' },
-
 			{ key: 'remote_id' },
 
-			//TODO: disabling searching by business unit or rule rating for now... we should setup dynamic fetching first?
-			//{ key: 'business_unit' },
-			//{ key: 'rule_rating' },
+			// Right now the only valid search fields are ids / email / company ... other fields may be worked with in create / update steps
 
-			{ key: 'marketing_rating_status', choices: [ "Not applicable", "Open", "Passed to sales", "Deferred", "Lead updated" ] },
-			{ key: 'salesperson' },
-			{ key: 'sales_rating_status', choices: [ "Not applicable", "Open", "Rated good", "Rated bad", "Contact attempted" ] },
-			{ key: 'opportunity', choices: [ 'Yes', 'None', 'Cancelled' ] },
-			{ key: 'sale', choices: [ 'Yes', 'None', 'Cancelled' ] },
+			// { key: 'business_unit' },
+			// { key: 'rule_rating' },
+			// { key: 'marketing_rating_status', choices: [ "Not applicable", "Open", "Passed to sales", "Deferred", "Lead updated" ] },
+			// { key: 'salesperson' },
+			// { key: 'sales_rating_status', choices: [ "Not applicable", "Open", "Rated good", "Rated bad", "Contact attempted" ] },
+			// { key: 'opportunity', choices: [ 'Yes', 'None', 'Cancelled' ] },
+			// { key: 'sale', choices: [ 'Yes', 'None', 'Cancelled' ] },
 
 			{ key: 'email' },
 			{ key: 'contact_id' },
@@ -58,6 +57,19 @@ module.exports = {
 			// Fatten the contact fields in the response
 			return z.request(url, options).then(response => {
 				const responseContent = z.JSON.parse(response.content);
+
+				//TODO: refactor this into a helpers function...
+				if ( response.status === 400 ) {
+					if ( responseBody.result_data && responseBody.result_data.errors ) {
+						throw new Error(responseBody.result_data.errors.join('\n'));
+					} else {
+						throw new Error(responseBody.result_text);
+					}
+				} else if ( response.status === 500 ) {
+					z.console.log("Internal error from request: " + JSON.stringify(requestBody));
+					throw new Error("Internal error from request: " + JSON.stringify(requestBody));
+				}
+
 				return responseContent.map((responseItem) => {
 
 					const contactData = responseItem.contact;
