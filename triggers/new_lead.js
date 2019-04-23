@@ -14,7 +14,7 @@ const getFallbackReal = (z, bundle) => {
 	};
 
 	return z.request(options)
-		.then((response) => z.JSON.parse(response.content));
+		.then((response) => z.JSON.parse(response.content).map(flattenLeadResponse));
 };
 
 // We recommend writing your triggers separate like this and rolling them
