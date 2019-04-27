@@ -18,7 +18,8 @@ module.exports = {
 			{ key: 'id' },
 			{ key: 'remote_id' },
 			{ key: 'email' },
-			{ key: 'company' },
+
+			// { key: 'company' },
 
 		],
 
@@ -31,7 +32,7 @@ module.exports = {
 				params: {}
 			};
 
-			[ 'id', 'remote_id', 'email', 'company', ].forEach((key) => {
+			[ 'id', 'remote_id', 'email', ].forEach((key) => {
 				//TODO: allow searches for empty strings?
 				bundle.inputData[key] && ( options.params[`filter[${key}]`] = bundle.inputData[key] );
 			});

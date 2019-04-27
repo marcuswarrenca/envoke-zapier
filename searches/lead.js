@@ -31,7 +31,8 @@ module.exports = {
 			{ key: 'email' },
 			{ key: 'contact_id' },
 			{ key: 'contact_remote_id' },
-			{ key: 'company' },
+
+			// { key: 'company' },
 
 		],
 
@@ -44,12 +45,12 @@ module.exports = {
 				params: {}
 			};
 
-			[ 'id', 'remote_id', 'business_unit', 'rule_rating', 'marketing_rating_status', 'salesperson', 'sales_rating_status', 'opportunity', 'sale', ].forEach((key) => {
+			[ 'id', 'remote_id', ].forEach((key) => {
 				//TODO: allow searches for empty strings?
 				bundle.inputData[key] && ( options.params[`filter[${key}]`] = bundle.inputData[key] );
 			});
 
-			[ 'email', 'contact_id', 'contact_remote_id', 'company', ].forEach((key) => {
+			[ 'email', 'contact_id', 'contact_remote_id', ].forEach((key) => {
 				//TODO: allow searches for empty strings?
 				bundle.inputData[key] && ( options.params[`filter[contact.${key}]`] = bundle.inputData[key] );
 			});
