@@ -108,11 +108,11 @@ const App = {
 	  [new_lead_trigger.key]: new_lead_trigger,
     [passed_to_sales_trigger.key]: passed_to_sales_trigger,
     [lead_update_trigger.key]: lead_update_trigger,
-    [new_opportunity_trigger.key]: new_opportunity_trigger,
-    [new_sale_trigger.key]: new_sale_trigger,
-    [submission_trigger.key]: submission_trigger,
+    // [new_opportunity_trigger.key]: new_opportunity_trigger,
+    // [new_sale_trigger.key]: new_sale_trigger,
+    // [submission_trigger.key]: submission_trigger,
     [new_contact_trigger.key]: new_contact_trigger,
-    [form_submission_trigger.key]: form_submission_trigger,
+    // [form_submission_trigger.key]: form_submission_trigger,
   },
 
   // If you want your searches to show up, you better include it here!

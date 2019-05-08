@@ -1,6 +1,6 @@
 const subscribeHook = require('../helpers/subscribe_hook');
 const unsubscribeHook = require('../helpers/unsubscribe_hook');
-const getFallbackReal = require('../helpers/get_fallback_submission_example');
+const getFallbackReal = require('../helpers/get_fallback_contact_example');
 
 const get = (z, bundle) => {
 	return bundle.cleanedRequest;
