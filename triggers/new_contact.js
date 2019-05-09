@@ -1,9 +1,18 @@
 const subscribeHook = require('../helpers/subscribe_hook');
 const unsubscribeHook = require('../helpers/unsubscribe_hook');
-const getFallbackReal = require('../helpers/get_fallback_contact_example');
+const getFallbackContactExample = require('../helpers/get_fallback_contact_example');
 
 const get = (z, bundle) => {
 	return bundle.cleanedRequest;
+};
+
+const getFallbackReal = (z, bundle) => {
+	// For the test poll, you should get some real data, to aid the setup process.
+	const options = {
+		url: `https://${process.env.SUBDOMAIN}.envoke.com/v1/contacts?sort%5Bid%5D=DESC`,
+	};
+
+	return z.request(options).then((response) => z.JSON.parse(response.content));
 };
 
 // We recommend writing your triggers separate like this and rolling them
@@ -42,8 +51,7 @@ module.exports = {
 		// from the API, Zapier will fallback to this hard-coded sample. It should reflect the data structure of
 		// returned records, and have obviously dummy values that we can show to any user.
 
-		//TODO: for submission type triggers we are currently hard coding a sample also used by getFallbackReal
-		sample: getFallbackReal()[0],
+		sample: getFallbackContactExample(),
 
 		// If the resource can have fields that are custom on a per-user basis, define a function to fetch the custom
 		// field definitions. The result will be used to augment the sample.
