@@ -25,7 +25,8 @@ module.exports = {
 	noun: 'Contact',
 	display: {
 		label: 'New Contact',
-		description: 'Trigger a new contact is added.'
+		description: 'Trigger a new contact is added.',
+		important: true
 	},
 
 	// `operation` is where the business logic goes.
