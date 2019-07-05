@@ -16,5 +16,6 @@ module.exports = (responseData) => {
 		}
 	});
 
+	delete responseData.contact;
 	return responseData;
 };
