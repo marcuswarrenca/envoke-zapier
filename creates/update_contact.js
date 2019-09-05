@@ -47,6 +47,8 @@ module.exports = {
 
 			{ key: "interests", list: true, dynamic: 'interestList.id.name' },
 			{ key: "autoresponders", label: "Nurture campaigns", list: true, dynamic: 'autoresponderList.id.name', helpText: "The contact must have a valid consent status (express / implied) in order to set nurture campaigns" },
+
+			additionalFields
 		],
 
 		perform: (z, bundle) => {
