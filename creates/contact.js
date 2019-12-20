@@ -11,7 +11,8 @@ module.exports = {
 	noun: 'Contact',
 	display: {
 		label: 'Create Contact',
-		description: 'Creates a new contact.'
+		description: 'Creates a new contact.',
+		important: true
 	},
 
 	// `operation` is where the business logic goes.
