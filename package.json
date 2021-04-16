@@ -15,7 +15,7 @@
     "npm": ">=3.10.10"
   },
   "dependencies": {
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "zapier-platform-core": "10.2.0"
   },
   "devDependencies": {
