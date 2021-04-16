@@ -1,6 +1,10 @@
+## 1.1.4
+
+Updated to zapier-platform-core version to 10.2.0
+
 ## 1.1.3
 
-Updated to zapier-platform-core >= 9.0.0
+Updated to zapier-platform-core version to 9.0.0
 
 ## 1.1.2
 
