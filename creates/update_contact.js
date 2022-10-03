@@ -101,29 +101,10 @@ module.exports = {
 				url: `https://${process.env.SUBDOMAIN}.envoke.com/v1/contacts`,
 				method: 'PATCH',
 				body: JSON.stringify(requestBody),
-				headers: {
-					'content-type': 'application/json',
-				}
 			});
 
 			return promise.then((response) => {
-
-				const responseBody = z.JSON.parse(response.content);
-
-				//TODO: refactor this into a helpers function...
-				if ( response.status === 400 ) {
-					if ( responseBody.result_data && responseBody.result_data.errors ) {
-						throw new Error(responseBody.result_data.errors.join('\n'));
-					} else {
-						throw new Error(responseBody.result_text);
-					}
-				} else if ( response.status === 500 ) {
-					z.console.log("Internal error from request: " + JSON.stringify(requestBody));
-					throw new Error("Internal error from request: " + JSON.stringify(requestBody));
-				}
-
 				//TODO: similar to how we handle return result_data in the creates, we should return the contact object here
-
 				return z.JSON.parse(response.content);
 			});
 		},

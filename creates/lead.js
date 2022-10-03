@@ -1,6 +1,10 @@
 const ForOwn = require('lodash/forOwn');
 const additionalFields = require('../helpers/additional_fields');
 
+const isHidden = () => {
+	return true;
+}
+
 // We recommend writing your creates separate like this and rolling them
 // into the App definition at the end.
 module.exports = {
@@ -11,7 +15,8 @@ module.exports = {
 	noun: 'Lead',
 	display: {
 		label: 'Create Lead',
-		description: 'Creates a new lead.'
+		description: 'Creates a new lead.',
+		hidden: isHidden,
 	},
 
 	// `operation` is where the business logic goes.
@@ -192,31 +197,13 @@ module.exports = {
 				url: `https://${process.env.SUBDOMAIN}.envoke.com/v1/leads`,
 				method: 'POST',
 				body: JSON.stringify(requestBody),
-				headers: {
-					'content-type': 'application/json',
-				}
 			});
 
 			//TODO: flatten the contact fields in response.content.result_data
 			return promise.then((response) => {
 
 				const responseBody = z.JSON.parse(response.content);
-
-				//TODO: refactor this into a helpers function...
-				if ( response.status === 400 ) {
-					if ( responseBody.result_data && responseBody.result_data.errors ) {
-						throw new Error(responseBody.result_data.errors.join('\n'));
-					} else {
-						throw new Error(responseBody.result_text);
-					}
-				} else if ( response.status === 500 ) {
-					z.console.log("Internal error from request: " + JSON.stringify(requestBody));
-					throw new Error("Internal error from request: " + JSON.stringify(requestBody));
-				}
-
-
 				const resultData = responseBody.result_data;
-
 				const contactData = resultData.contact;
 
 				resultData.contact_id = contactData.id;
