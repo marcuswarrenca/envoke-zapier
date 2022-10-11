@@ -22,6 +22,9 @@ const contact_update = require('./creates/update_contact');
 
 // Add this helper function above the App definition
 const includeBearerToken = (request, z, bundle) => {
+
+	// z.console.log("Testing includeBearerToken: " + JSON.stringify(bundle.authData));
+
 	if ( bundle.authData.access_token ) {
 		request.headers.Authorization = `Bearer ${bundle.authData.access_token}`;
 	}
@@ -29,12 +32,16 @@ const includeBearerToken = (request, z, bundle) => {
 };
 
 const addContentTypeToHeader = (request, z, bundle) => {
-  request.headers['content-type'] = "application/json";
+	if ( !request.headers['content-type'] ) {
+		request.headers['content-type'] = "application/json";
+	}
   return request;
 };
 
 const handleErrors = (response, z) => {
 	const responseBody = z.JSON.parse(response.content);
+
+	// z.console.log("Testing handleErrors: " + JSON.stringify(response));
 
 	if ( response.status === 400 ) {
 
@@ -45,8 +52,8 @@ const handleErrors = (response, z) => {
 		}
 
 	} else if ( response.status === 500 ) {
-		z.console.log("Internal error from request: " + JSON.stringify(requestBody));
-		throw new z.errors.Error("Internal error from request: " + JSON.stringify(requestBody));
+		z.console.log("Internal error from request: " + JSON.stringify(response));
+		throw new z.errors.Error("Internal error from request: " + JSON.stringify(response));
 
 	} else {
 

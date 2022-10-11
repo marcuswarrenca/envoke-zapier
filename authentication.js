@@ -1,14 +1,18 @@
-'use strict';
-
 const getAccessToken = async (z, bundle) => {
   const response = await z.request({
-    url: 'https://auth-json-server.zapier-staging.com/oauth/access-token',
+    url: `https://${process.env.SUBDOMAIN}.envoke.com/ext/oauth/access_token`,
     method: 'POST',
     body: {
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
+      //TODO: incredibly, the order of these parameters appears to matter...
       grant_type: 'authorization_code',
       code: bundle.inputData.code,
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+
+      //TODO: this shouldn't be necessary...
+      // redirect_uri: `https://${process.env.SUBDOMAIN}.envoke.com/oauth/tokens`,
+
+      redirect_uri: bundle.inputData.redirect_uri,
 
       // Extra data can be pulled from the querystring. For instance:
       // 'accountDomain': bundle.cleanedRequest.querystring.accountDomain
@@ -18,6 +22,9 @@ const getAccessToken = async (z, bundle) => {
 
   // If you're using core v9.x or older, you should call response.throwForStatus()
   // or verify response.status === 200 before you continue.
+
+  // z.console.log("Trying to get access token...");
+  // z.console.log(response);
 
   // This function should return `access_token`.
   // If your app does an app refresh, then `refresh_token` should be returned here
@@ -59,7 +66,7 @@ const refreshAccessToken = async (z, bundle) => {
 // This function runs before every outbound request. You can have as many as you
 // need. They'll need to each be registered in your index.js file.
 const includeBearerToken = (request, z, bundle) => {
-  if (bundle.authData.access_token) {
+  if ( bundle.authData.access_token ) {
     request.headers.Authorization = `Bearer ${bundle.authData.access_token}`;
   }
 
@@ -72,21 +79,45 @@ const includeBearerToken = (request, z, bundle) => {
 // response data for testing purposes. Your connection label can access any data
 // from the returned response using the `json.` prefix. eg: `{{json.username}}`.
 const test = (z, bundle) =>
-  z.request({ url: 'https://auth-json-server.zapier-staging.com/me' });
+  z.request({ url: `https://${process.env.SUBDOMAIN}.envoke.com/v1/interests` });
+
+//TODO: our previous test method...
+// Checking for bad response status will no longer work, we need to use middleware (?)
+// Or is that not the case during authorization phase (?)
+/*
+const test = (z, bundle) => {
+  // This method can return any truthy value to indicate the credentials are valid.
+  // Raise an error to show
+  return z.request({
+    url: `https://${process.env.SUBDOMAIN}.envoke.com/v1/interests`,
+  }).then((response) => {
+    if ( response.status === 401 ) {
+      throw new Error('The username and/or password you supplied is incorrect');
+    }
+    return response;
+  });
+}
+*/
+
+// response_type=code&client_id=d6d096c9336cb5c4418625626c9ce505&redirect_uri=https%3A%2F%2Fe1.envoke.com%2Fbegin&scope=all
 
 module.exports = {
-  config: {
+  // config: {
     // OAuth2 is a web authentication standard. There are a lot of configuration
     // options that will fit most any situation.
     type: 'oauth2',
     oauth2Config: {
       authorizeUrl: {
-        url: 'https://auth-json-server.zapier-staging.com/oauth/authorize',
+        url: `https://${process.env.SUBDOMAIN}.envoke.com/ext/oauth/authorize`,
         params: {
-          client_id: '{{process.env.CLIENT_ID}}',
-          state: '{{bundle.inputData.state}}',
-          redirect_uri: '{{bundle.inputData.redirect_uri}}',
+          //TODO: incredibly, the order of these parameters appears to matter...
           response_type: 'code',
+          client_id: '{{process.env.CLIENT_ID}}',
+          scope: 'all',
+
+          //TODO: these two are not populated by Zapier?
+          // state: '{{bundle.inputData.state}}',
+          redirect_uri: '{{bundle.inputData.redirect_uri}}',
         },
       },
       getAccessToken,
@@ -109,8 +140,12 @@ module.exports = {
     // be `{{X}}`. This can also be a function that returns a label. That function has
     // the standard args `(z, bundle)` and data returned from the test can be accessed
     // in `bundle.inputData.X`.
-    connectionLabel: '{{json.username}}',
-  },
-  befores: [includeBearerToken],
-  afters: [],
+    // connectionLabel: '{{json.username}}',
+
+    connectionLabel: 'Connection successful',
+  // },
+
+  // befores: [includeBearerToken],
+  // afters: [],
+
 };

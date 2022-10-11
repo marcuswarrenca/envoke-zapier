@@ -45,8 +45,8 @@ module.exports = {
 			{ key: "language" },
 			{ key: "feedback" },
 
-			{ key: "interests", list: true, dynamic: 'interestList.id.name' },
-			{ key: "autoresponders", label: "Nurture campaigns", list: true, dynamic: 'autoresponderList.id.name', helpText: "The contact must have a valid consent status (express / implied) in order to set nurture campaigns" },
+			{ key: "interests", label: "Tags and subscriptions", list: true, dynamic: 'interestList.id.name' },
+			{ key: "autoresponders", label: "Automated messages", list: true, dynamic: 'autoresponderList.id.name', helpText: "The contact must have a valid consent status (express / implied) in order to set automated messages" },
 
 			additionalFields
 		],
