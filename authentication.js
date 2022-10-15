@@ -79,7 +79,7 @@ const includeBearerToken = (request, z, bundle) => {
 // response data for testing purposes. Your connection label can access any data
 // from the returned response using the `json.` prefix. eg: `{{json.username}}`.
 const test = (z, bundle) =>
-  z.request({ url: `https://${process.env.SUBDOMAIN}.envoke.com/v1/interests` });
+  z.request({ url: `https://${process.env.SUBDOMAIN}.envoke.com/v1/settings` });
 
 //TODO: our previous test method...
 // Checking for bad response status will no longer work, we need to use middleware (?)
@@ -140,9 +140,21 @@ module.exports = {
     // be `{{X}}`. This can also be a function that returns a label. That function has
     // the standard args `(z, bundle)` and data returned from the test can be accessed
     // in `bundle.inputData.X`.
-    // connectionLabel: '{{json.username}}',
 
-    connectionLabel: 'Connection successful',
+    // connectionLabel: '{{json.name}} (ID: {{json.id}})',
+
+    //TODO: I think we're good with just the account name here... we could add ID if needed (?)
+    connectionLabel: '{{json.name}}',
+
+    /*
+    connectionLabel: (z, bundle) => {
+
+      z.console.log(bundle);
+
+      return `${bundle.inputData.name} (ID: ${bundle.inputData.id})`;
+    },
+    */
+
   // },
 
   // befores: [includeBearerToken],
