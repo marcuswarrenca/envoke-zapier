@@ -22,7 +22,7 @@ module.exports = {
 			{ key: "email", required: true },
 
 			{ key: "consent_status", required: true, choices: [ 'Express', 'Implied - Inquiry', 'Implied - Transaction', 'Implied - No Expiry', 'Not Provided', 'Revoked' ] },
-			{ key: "consent_description" },
+			{ key: "consent_description", required: true },
 
 			{ key: "first_name" },
 			{ key: "last_name" },

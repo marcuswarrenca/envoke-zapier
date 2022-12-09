@@ -1,3 +1,8 @@
+## 1.2.0
+
+* Move to simpler versioning system — new major versions will indicate breaking changes, point updates will indicate minor changes / bug fixes
+* Consent description is now a required field when inserting contacts
+
 ## 1.1.5
 
 * Support for OAUTH authentication, previous basic auth removed
